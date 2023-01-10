@@ -5,3 +5,9 @@ AllCops:
 
 Style/Documentation:
   Enabled: false
+Metrics/BlockLength:
+  Exclude:
+    - test/**/*
+Lint/ConstantDefinitionInBlock:
+  Exclude:
+    - test/**/*

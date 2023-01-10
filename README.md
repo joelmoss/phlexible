@@ -6,15 +6,45 @@ A bunch of helpers and goodies intended to make life with [Phlex](https://phlex.
 
 Install the gem and add to the application's Gemfile by executing:
 
-    bundle add phlexible
+`bundle add phlexible`
 
 If bundler is not being used to manage dependencies, install the gem by executing:
 
-    $ gem install phlexible
+`$ gem install phlexible`
 
 ## Usage
 
-TODO: Write usage instructions here
+### AliasView
+
+Create an alias at a given `element`, to the given view class.
+
+So instead of:
+
+```ruby
+class MyView < Phlex::HTML
+    def template
+        div do
+            render My::Awesome::Component.new
+        end
+    end
+end
+```
+
+You can instead do:
+
+```ruby
+class MyView < Phlex::HTML
+    extend Phlexible::AliasView
+
+    alias_view :awesome, -> { My::Awesome::Component }
+
+    def template
+        div do
+            awesome
+        end
+    end
+end
+```
 
 ## Development
 

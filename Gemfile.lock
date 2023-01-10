@@ -166,6 +166,7 @@ GEM
     rubocop-ast (1.24.1)
       parser (>= 3.1.1.0)
     ruby-progressbar (1.11.0)
+    sus (0.16.0)
     thor (1.2.1)
     timeout (0.3.1)
     tzinfo (2.0.5)
@@ -180,10 +181,10 @@ PLATFORMS
   arm64-darwin-22
 
 DEPENDENCIES
-  minitest (~> 5.0)
   phlexible!
   rake (~> 13.0)
   rubocop (~> 1.21)
+  sus (~> 0.16.0)
 
 BUNDLED WITH
    2.4.1

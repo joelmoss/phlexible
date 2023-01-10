@@ -5,5 +5,5 @@ require 'phlex'
 require 'phlex-rails'
 
 module Phlexible
-  autoload :Alias, 'phlexible/alias'
+  autoload :AliasView, 'phlexible/alias_view'
 end

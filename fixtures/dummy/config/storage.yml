@@ -1,0 +1,3 @@
+test:
+  service: Disk
+  root: /Users/joelmoss/dev/phlexible/tmp/storage

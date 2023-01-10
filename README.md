@@ -14,7 +14,34 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ## Usage
 
-### AliasView
+### Rails
+
+#### `AnchorElement`
+
+No need to call Rails `link_to` helper, when you can simply render an anchor tag directly with
+Phlex. But unfortunately that means you lose some of the magic that `link_to` provides. Especially
+the automatic resolution of URL's and Rails routes.
+
+The `Phlexible::Rails::AnchorElement` module redefines the `a` tag, and passes through the `href`
+attribute to Rails `url_for` helper. So you can do this:
+
+```ruby
+Rails.application.routes.draw do
+  resources :articles
+end
+```
+
+```ruby
+class MyView < Phlex::HTML
+    include Phlexible::Rails::AnchorElement
+
+    def template
+        a(href: :articles) { 'View articles' }
+    end
+end
+```
+
+### `AliasView`
 
 Create an alias at a given `element`, to the given view class.
 

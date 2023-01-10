@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = 'https://github.com/joelmoss/phlexible'
   spec.metadata['changelog_uri'] = 'https://github.com/joelmoss/phlexible/releases'
+  spec.metadata['rubygems_mfa_required'] = 'true'
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
@@ -34,5 +35,4 @@ Gem::Specification.new do |spec|
   # Uncomment to register a new dependency of your gem
   spec.add_dependency 'phlex', '~> 1.0'
   spec.add_dependency 'phlex-rails', '~> 0.4'
-  spec.metadata['rubygems_mfa_required'] = 'true'
 end

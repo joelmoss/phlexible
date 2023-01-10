@@ -2,8 +2,8 @@
 
 require_relative 'phlexible/version'
 require 'phlex'
-require 'phlex-rails'
 
 module Phlexible
   autoload :AliasView, 'phlexible/alias_view'
+  autoload :Rails, 'phlexible/rails'
 end

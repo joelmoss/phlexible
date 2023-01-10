@@ -11,3 +11,6 @@ Metrics/BlockLength:
 Lint/ConstantDefinitionInBlock:
   Exclude:
     - test/**/*
+Style/ClassAndModuleChildren:
+  Exclude:
+    - fixtures/**/*

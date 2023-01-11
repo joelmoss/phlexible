@@ -14,3 +14,5 @@ Lint/ConstantDefinitionInBlock:
 Style/ClassAndModuleChildren:
   Exclude:
     - fixtures/**/*
+Metrics/MethodLength:
+  Max: 15

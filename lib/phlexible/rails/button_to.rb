@@ -11,12 +11,13 @@ module Phlexible
       BUTTON_TAG_METHOD_VERBS = %w[patch put delete].freeze
       DEFAULT_OPTIONS = { method: 'post' }.freeze
 
-      def initialize(name = nil, url = nil, options = nil)
+      def initialize(name = nil, url = nil, options = nil) # rubocop:disable Lint/MissingSuper
         @name = name
         @url = url
         @options = options
       end
 
+      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
       def template(&block)
         if block_given?
           @options = @url
@@ -37,6 +38,7 @@ module Phlexible
           block_given? ? button(**button_attrs, &block) : button(**button_attrs) { @name }
         end
       end
+      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
 
       private
 

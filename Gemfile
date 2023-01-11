@@ -6,6 +6,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'combustion'
+gem 'phlex-testing-nokogiri'
 gem 'rake', '~> 13.0'
 gem 'rubocop', '~> 1.21'
 gem 'sus', '~> 0.16.0'

@@ -123,6 +123,9 @@ GEM
       phlex (>= 1, < 2)
       rails (>= 6.1, < 8)
       zeitwerk (~> 2)
+    phlex-testing-nokogiri (0.1.0)
+      nokogiri (~> 1.13)
+      phlex (>= 0.5)
     racc (1.6.2)
     rack (2.2.5)
     rack-test (2.0.2)
@@ -188,6 +191,7 @@ PLATFORMS
 
 DEPENDENCIES
   combustion
+  phlex-testing-nokogiri
   phlexible!
   rake (~> 13.0)
   rubocop (~> 1.21)

@@ -6,5 +6,9 @@ module Phlexible
   module Rails
     autoload :AElement, 'phlexible/rails/a_element'
     autoload :ButtonTo, 'phlexible/rails/button_to'
+
+    module ActionController
+      autoload :ImplicitRender, 'phlexible/rails/action_controller/implicit_render'
+    end
   end
 end

@@ -16,6 +16,26 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ### Rails
 
+### ActionController::ImplicitRender
+
+Adds support for default and `action_missing` rendering of Phlex views. So instead of this:
+
+```ruby
+class UsersController
+  def index
+    render Views::Users::Index.new
+  end
+end
+```
+
+You can do this:
+
+```ruby
+class UsersController
+  include Phlexible::Rails::ActionController::ImplicitRender
+end
+```
+
 #### `AElement`
 
 No need to call Rails `link_to` helper, when you can simply render an anchor tag directly with

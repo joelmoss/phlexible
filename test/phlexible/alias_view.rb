@@ -1,15 +1,19 @@
 # frozen_string_literal: true
 
+require 'phlex/testing/view_helper'
+
 describe Phlexible::AliasView do
-  extend ViewHelper
+  include Phlex::Testing::ViewHelper
 
   class IconView < Phlex::HTML
     def template
+      # pp 1, block
       span { 'I am an icon!' }
+      yield if block_given?
     end
   end
 
-  aliased_view = Class.new Phlex::HTML do
+  view = Class.new Phlex::HTML do
     extend Phlexible::AliasView
 
     alias_view :icon, -> { IconView }
@@ -21,15 +25,31 @@ describe Phlexible::AliasView do
     end
   end
 
-  unaliased_view = Class.new Phlex::HTML do
+  view_with_block = Class.new Phlex::HTML do
+    extend Phlexible::AliasView
+
+    alias_view :icon, -> { IconView }
+
     def template
       div do
-        render IconView.new
+        icon do
+          div { 'boo!' }
+        end
       end
     end
   end
 
   it 'defines alias method' do
-    expect(aliased_view.new.call).to be == unaliased_view.new.call
+    output = render(view.new)
+
+    expect(output).to be == '<div><span>I am an icon!</span></div>'
+  end
+
+  with 'block' do
+    it 'renders the block' do
+      output = render(view_with_block.new)
+
+      expect(output).to be == '<div><span>I am an icon!</span><div>boo!</div></div>'
+    end
   end
 end

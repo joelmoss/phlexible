@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Phlexible::Rails::HrefAttribute do
+describe Phlexible::Rails::AElement do
   let(:output) { ArticlesController.render 'index' }
 
   it 'pass href attribute to url_for' do

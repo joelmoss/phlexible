@@ -16,13 +16,13 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ### Rails
 
-#### `HrefAttribute`
+#### `AElement`
 
 No need to call Rails `link_to` helper, when you can simply render an anchor tag directly with
 Phlex. But unfortunately that means you lose some of the magic that `link_to` provides. Especially
 the automatic resolution of URL's and Rails routes.
 
-The `Phlexible::Rails::HrefAttribute` module passes through the `href` attribute to Rails `url_for`
+The `Phlexible::Rails::AElement` module passes through the `href` attribute to Rails `url_for`
 helper. So you can do this:
 
 ```ruby
@@ -33,7 +33,7 @@ end
 
 ```ruby
 class MyView < Phlex::HTML
-    include Phlexible::Rails::HrefAttribute
+    include Phlexible::Rails::AElement
 
     def template
         a(href: :articles) { 'View articles' }

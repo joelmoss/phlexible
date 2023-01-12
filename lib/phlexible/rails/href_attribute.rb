@@ -2,12 +2,12 @@
 
 module Phlexible
   module Rails
-    module AnchorElement
-      # @override Calls `url_for` for the :href attribute.
-      def a(**attributes, &block)
+    # Calls `url_for` for the `href` attribute.
+    module HrefAttribute
+      def _attributes(**attributes)
         attributes[:href] = helpers.url_for(attributes[:href]) if attributes.key?(:href)
 
-        super(**attributes, &block)
+        super(**attributes)
       end
     end
   end

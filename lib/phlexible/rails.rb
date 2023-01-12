@@ -4,7 +4,7 @@ require 'phlex-rails'
 
 module Phlexible
   module Rails
-    autoload :AnchorElement, 'phlexible/rails/anchor_element'
+    autoload :HrefAttribute, 'phlexible/rails/href_attribute'
     autoload :ButtonTo, 'phlexible/rails/button_to'
   end
 end

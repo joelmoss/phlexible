@@ -21,6 +21,11 @@ module Phlexible
           render_view_class || super
         end
 
+        def render_view_class(view_options = nil, render_options = {})
+          klass = render_options&.key?(:action) ? phlex_view(render_options[:action]) : phlex_view
+          klass && render(klass.new(view_options), render_options)
+        end
+
         private
 
         def method_for_action(action_name)
@@ -33,16 +38,12 @@ module Phlexible
           end
         end
 
-        def render_view_class
-          phlex_view && render(phlex_view.new)
-        end
-
         def _handle_view_class(*_args)
           render_view_class
         end
 
-        def phlex_view
-          @phlex_view ||= "views/#{controller_path}/#{@_action_name}".classify.safe_constantize
+        def phlex_view(action_name = @_action_name)
+          "views/#{controller_path}/#{action_name}".classify.safe_constantize
         end
       end
     end

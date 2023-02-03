@@ -17,13 +17,17 @@ module Phlexible
   module Rails
     module ActionController
       module ImplicitRender
+        NUFFIN = 'NUFFIN'
+
         def default_render
           render_view_class || super
         end
 
-        def render_view_class(view_options = nil, render_options = {})
+        def render_view_class(view_options = NUFFIN, render_options = {})
           klass = render_options&.key?(:action) ? phlex_view(render_options[:action]) : phlex_view
-          klass && render(klass.new(view_options), render_options)
+          return unless klass
+
+          render view_options == NUFFIN ? klass.new : klass.new(view_options), render_options
         end
 
         private

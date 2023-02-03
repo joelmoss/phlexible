@@ -16,7 +16,7 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ### Rails
 
-### ActionController::ImplicitRender
+### `ActionController::ImplicitRender`
 
 Adds support for default and `action_missing` rendering of Phlex views. So instead of this:
 
@@ -35,6 +35,33 @@ class UsersController
   include Phlexible::Rails::ActionController::ImplicitRender
 end
 ```
+
+### `Responder`
+
+If you use [Responders](https://github.com/heartcombo/responders), Phlexible provides a responder to
+support implicit rendering similar to `ActionController::ImplicitRender` above. It will render the
+Phlex view using `respond_with` if one exists, and fall back to default rendering.
+
+Just include it in your ApplicationResponder:
+
+```ruby
+class ApplicationResponder < ActionController::Responder
+  include Phlexible::Rails::Responder
+end
+```
+
+Then simply `respond_with` in your action method as normal:
+
+```ruby
+class UsersController < ApplicationController
+  def new
+    respond_with User.new
+  end
+end
+```
+
+This responder requires the use of `ActionController::ImplicitRender`, so dont't forget to include
+that in your `ApplicationController`.
 
 #### `AElement`
 

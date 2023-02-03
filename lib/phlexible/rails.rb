@@ -4,6 +4,7 @@ require 'phlex-rails'
 
 module Phlexible
   module Rails
+    autoload :Responder, 'phlexible/rails/responder'
     autoload :AElement, 'phlexible/rails/a_element'
     autoload :ButtonTo, 'phlexible/rails/button_to'
 

@@ -16,7 +16,7 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ### Rails
 
-### `ActionController::ImplicitRender`
+#### `ActionController::ImplicitRender`
 
 Adds support for default and `action_missing` rendering of Phlex views. So instead of this:
 
@@ -36,7 +36,7 @@ class UsersController
 end
 ```
 
-### `Responder`
+#### `Responder`
 
 If you use [Responders](https://github.com/heartcombo/responders), Phlexible provides a responder to
 support implicit rendering similar to `ActionController::ImplicitRender` above. It will render the
@@ -119,6 +119,20 @@ class MyView < Phlex::HTML
     end
 end
 ```
+
+### PageTitle
+
+Helper to assist in defining page titles within Phlex views. Also includes support for nested views,
+where each desendent view class will have its title prepended to the page title. Simply assign the
+title to the `page_title` class variable:
+
+```ruby
+class MyView
+  self.page_title = 'My Title'
+end
+```
+
+Then call the `page_title` method in the `<head>` of your page.
 
 ## Development
 

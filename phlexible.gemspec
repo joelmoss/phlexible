@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors = ['Joel Moss']
   spec.email = ['joel@developwithstyle.com']
 
-  spec.summary = 'A bunch of helpers and goodies intended to make life with [Phlex](https://phlex.fun) even easier!'
-  spec.description = 'A bunch of helpers and goodies intended to make life with [Phlex](https://phlex.fun) even easier!'
+  spec.summary = 'A bunch of helpers and goodies intended to make life with Phlex even easier!'
+  spec.description = 'A bunch of helpers and goodies intended to make life with Phlex even easier!'
   spec.homepage = 'https://github.com/joelmoss/phlexible'
   spec.license = 'MIT'
   spec.required_ruby_version = '>= 3.0.0'

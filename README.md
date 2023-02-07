@@ -80,13 +80,46 @@ end
 
 ```ruby
 class MyView < Phlex::HTML
-    include Phlexible::Rails::AElement
+  include Phlexible::Rails::AElement
 
-    def template
-        a(href: :articles) { 'View articles' }
-    end
+  def template
+    a(href: :articles) { 'View articles' }
+  end
 end
 ```
+
+#### 'ButtonTo`
+
+Generates a form containing a single button that submits to the URL created by the set of options.
+
+It is similar to Rails `button_to` helper, which accepts the value/content of the button as the
+first argument, and a URL or route helper as the second argument.
+
+```ruby
+Phlexible::Rails::ButtonTo.new 'My Button', :root
+```
+
+Alternatively you can pass a block; the result of which will be used as the value of the button.
+
+```ruby
+Phlexible::Rails::ButtonTo.new(:root) { 'Go Home 👉' }
+```
+
+The url argument accepts the same options as Rails `url_for`.
+
+The form submits a POST request by default. You can specify a different HTTP verb via the :method
+option.
+
+```ruby
+Phlexible::Rails::ButtonTo.new 'My Button', :root, method: :patch
+```
+
+##### Options
+
+- `:class` - Specify the HTML class name of the button (not the form).
+- `:data` - This option can be used to add custom data attributes.
+- `:method` - Symbol of the HTTP verb. Supported verbs are :post (default), :get, :delete, :patch,
+              and :put.
 
 ### `AliasView`
 
@@ -96,11 +129,11 @@ So instead of:
 
 ```ruby
 class MyView < Phlex::HTML
-    def template
-        div do
-            render My::Awesome::Component.new
-        end
+  def template
+    div do
+      render My::Awesome::Component.new
     end
+  end
 end
 ```
 
@@ -108,15 +141,15 @@ You can instead do:
 
 ```ruby
 class MyView < Phlex::HTML
-    extend Phlexible::AliasView
+  extend Phlexible::AliasView
 
-    alias_view :awesome, -> { My::Awesome::Component }
+  alias_view :awesome, -> { My::Awesome::Component }
 
-    def template
-        div do
-            awesome
-        end
+  def template
+    div do
+      awesome
     end
+  end
 end
 ```
 

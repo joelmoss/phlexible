@@ -69,8 +69,7 @@ describe Phlexible::Rails::ButtonTo do
 
   with 'options.data' do
     it 'renders data attribute' do
-      output = render subject.new('My Button', '/',
-                                  data: { disable_with: 'Please wait...' })
+      output = render subject.new('My Button', '/', data: { disable_with: 'Please wait...' })
 
       expect(output.at_css('button')['data-disable-with']).to be == 'Please wait...'
     end

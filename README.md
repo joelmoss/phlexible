@@ -117,6 +117,7 @@ Phlexible::Rails::ButtonTo.new 'My Button', :root, method: :patch
 ##### Options
 
 - `:class` - Specify the HTML class name of the button (not the form).
+- `:form_class` - Specify the HTML class name of the form (default: 'button_to').
 - `:data` - This option can be used to add custom data attributes.
 - `:method` - Symbol of the HTTP verb. Supported verbs are :post (default), :get, :delete, :patch,
               and :put.

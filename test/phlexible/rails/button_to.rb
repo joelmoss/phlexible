@@ -67,6 +67,14 @@ describe Phlexible::Rails::ButtonTo do
     end
   end
 
+  with 'options.form_class' do
+    it 'renders class name on the button' do
+      output = render subject.new('My Button', '/', form_class: 'foo')
+
+      expect(output.at_css('form')[:class]).to be == 'foo'
+    end
+  end
+
   with 'options.data' do
     it 'renders data attribute' do
       output = render subject.new('My Button', '/', data: { disable_with: 'Please wait...' })

@@ -9,7 +9,7 @@ module Phlexible
   module Rails
     class ButtonTo < Phlex::HTML
       BUTTON_TAG_METHOD_VERBS = %w[patch put delete].freeze
-      DEFAULT_OPTIONS = { method: 'post' }.freeze
+      DEFAULT_OPTIONS = { method: 'post', form_class: 'button_to' }.freeze
 
       def initialize(name = nil, url = nil, options = nil) # rubocop:disable Lint/MissingSuper
         @name = name
@@ -31,7 +31,7 @@ module Phlexible
         method = (@options.delete(:method).presence || method_for_options(@options)).to_s
         form_method = method == 'get' ? 'get' : 'post'
 
-        form action: action, class: 'button_to', method: form_method do
+        form action: action, class: @options.delete(:form_class), method: form_method do
           method_tag method
           form_method == 'post' && token_input(action, method.empty? ? 'post' : method)
 

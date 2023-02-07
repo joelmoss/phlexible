@@ -7,11 +7,11 @@
 # option.
 module Phlexible
   module Rails
-    class ButtonTo < Phlex::HTML
+    module ButtonToConcerns
       BUTTON_TAG_METHOD_VERBS = %w[patch put delete].freeze
       DEFAULT_OPTIONS = { method: 'post', form_class: 'button_to' }.freeze
 
-      def initialize(name = nil, url = nil, options = nil) # rubocop:disable Lint/MissingSuper
+      def initialize(name = nil, url = nil, options = nil)
         @name = name
         @url = url
         @options = options
@@ -73,6 +73,10 @@ module Phlexible
 
         input type: 'hidden', name: '_method', value: method.to_s, autocomplete: 'off'
       end
+    end
+
+    class ButtonTo < Phlex::HTML
+      include ButtonToConcerns
     end
   end
 end

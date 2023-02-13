@@ -46,6 +46,7 @@ Just include it in your ApplicationResponder:
 
 ```ruby
 class ApplicationResponder < ActionController::Responder
+  include Phlexible::Rails::ActionController::ImplicitRender
   include Phlexible::Rails::Responder
 end
 ```
@@ -57,6 +58,25 @@ class UsersController < ApplicationController
   def new
     respond_with User.new
   end
+
+  def index
+    respond_with User.all
+  end
+end
+```
+
+As Phlex views expect explicit arguments, you can pass these in the `:view_options` keyword
+argument:
+
+```ruby
+class UsersController < ApplicationController
+  def index
+    respond_with User.all, view_options: { page: 1 }
+  end
+end
+
+class Views::Users::Index < Phlex::HTML
+  def initialize(users, page:); end
 end
 ```
 

@@ -14,8 +14,9 @@ module Phlexible
         end
       end
 
-      # Render the Phlex view with the current resource. Falls back to default controller rendering if
-      # no Phlex view exists.
+      # Render the Phlex view with the current resource. Falls back to default controller rendering
+      # if no Phlex view exists. If a `view_options` keyword argument is given, this will be passed
+      # as the keyword arguments of the view initializer.
       #
       # @see Phlexible::Rails::ActionController::ImplicitRender#render_view_class
       def render_phlex_view(options)

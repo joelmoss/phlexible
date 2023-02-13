@@ -23,11 +23,20 @@ module Phlexible
           render_view_class || super
         end
 
+        # Renders the Phlex view.
         def render_view_class(view_options = NUFFIN, render_options = {})
           klass = render_options&.key?(:action) ? phlex_view(render_options[:action]) : phlex_view
           return unless klass
 
-          render view_options == NUFFIN ? klass.new : klass.new(view_options), render_options
+          if view_options == NUFFIN
+            view_options = render_options.delete(:view_options)
+            render klass.new(view_options), render_options
+          else
+            kwargs = {}
+            kwargs = render_options.delete(:view_options) if render_options.key?(:view_options)
+
+            render klass.new(view_options, **kwargs), render_options
+          end
         end
 
         private

@@ -29,8 +29,8 @@ module Phlexible
           return unless klass
 
           if view_options == NUFFIN
-            view_options = render_options.delete(:view_options)
-            render klass.new(view_options), render_options
+            view_options = render_options.delete(:view_options) { {} }
+            render klass.new(**view_options), render_options
           else
             kwargs = {}
             kwargs = render_options.delete(:view_options) if render_options.key?(:view_options)

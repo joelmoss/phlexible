@@ -30,6 +30,6 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'phlex', '~> 1.0'
-  spec.add_dependency 'phlex-rails', '~> 0.4'
+  spec.add_dependency 'phlex', '~> 1.4'
+  spec.add_dependency 'phlex-rails', '~> 0.7.1'
 end

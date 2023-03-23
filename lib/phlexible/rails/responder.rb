@@ -8,7 +8,7 @@ module Phlexible
         if @default_response
           @default_response.call(options)
         elsif !get? && has_errors?
-          render_phlex_view options.merge(status: :unprocessable_entity)
+          render_phlex_view({ status: error_status }.merge!(options))
         else
           render_phlex_view options
         end

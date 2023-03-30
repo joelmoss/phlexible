@@ -5,6 +5,8 @@ module Phlexible
     module Responder
       # Overridden to support implicit rendering of phlex views.
       def default_render
+        return super if format != :html
+
         if @default_response
           @default_response.call(options)
         elsif !get? && has_errors?

@@ -112,17 +112,11 @@ end
 
 Generates a form containing a single button that submits to the URL created by the set of options.
 
-It is similar to Rails `button_to` helper, which accepts the value/content of the button as the
-first argument, and a URL or route helper as the second argument.
+It is similar to Rails `button_to` helper, which accepts the URL or route helper as the first
+argument, and the value/content of the button as the block.
 
 ```ruby
-Phlexible::Rails::ButtonTo.new 'My Button', :root
-```
-
-Alternatively you can pass a block; the result of which will be used as the value of the button.
-
-```ruby
-Phlexible::Rails::ButtonTo.new(:root) { 'Go Home 👉' }
+Phlexible::Rails::ButtonTo.new(:root) { 'My Button' }
 ```
 
 The url argument accepts the same options as Rails `url_for`.
@@ -131,7 +125,7 @@ The form submits a POST request by default. You can specify a different HTTP ver
 option.
 
 ```ruby
-Phlexible::Rails::ButtonTo.new 'My Button', :root, method: :patch
+Phlexible::Rails::ButtonTo.new(:root, method: :patch) { 'My Button' }
 ```
 
 ##### Options

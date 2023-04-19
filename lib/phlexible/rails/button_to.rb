@@ -11,20 +11,13 @@ module Phlexible
       BUTTON_TAG_METHOD_VERBS = %w[patch put delete].freeze
       DEFAULT_OPTIONS = { method: 'post', form_class: 'button_to' }.freeze
 
-      def initialize(name = nil, url = nil, options = nil)
-        @name = name
+      def initialize(url, options = nil)
         @url = url
         @options = options
       end
 
-      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+      # rubocop:disable Metrics/AbcSize
       def template(&block)
-        if block_given?
-          @options = @url
-          @url = @name
-          @name = nil
-        end
-
         action = helpers.url_for(@url)
         @options = DEFAULT_OPTIONS.merge((@options || {}).symbolize_keys)
 
@@ -38,7 +31,7 @@ module Phlexible
           block_given? ? button(**button_attrs, &block) : button(**button_attrs) { @name }
         end
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
+      # rubocop:enable Metrics/AbcSize
 
       private
 

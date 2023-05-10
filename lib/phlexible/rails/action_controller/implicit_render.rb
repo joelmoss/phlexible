@@ -11,48 +11,42 @@
 # You can do this:
 #
 #   class UsersController
+#     include Phlexible::Rails::ActionController::ImplicitRender
 #   end
 #
 module Phlexible
   module Rails
     module ActionController
       module ImplicitRender
-        NUFFIN = 'NUFFIN'
-
         def default_render
-          render_view_class || super
+          render_plex_view({ action: action_name }) || super
         end
 
-        # Renders the Phlex view.
-        def render_view_class(view_options = NUFFIN, render_options = {})
-          klass = render_options&.key?(:action) ? phlex_view(render_options[:action]) : phlex_view
-          return unless klass
-
-          if view_options == NUFFIN
-            view_options = render_options.delete(:view_options) { {} }
-            render klass.new(**view_options), render_options
-          else
-            kwargs = {}
-            kwargs = render_options.delete(:view_options) if render_options.key?(:view_options)
-
-            render klass.new(view_options, **kwargs), render_options
+        def assign_phlex_accessors(pview)
+          pview.tap do |view|
+            view.__controller_attributes__.each do |attr|
+              view.instance_variable_set :"@#{attr}", view_assigns[attr.to_s]
+            end
           end
         end
-
-        private
 
         def method_for_action(action_name)
-          if action_method?(action_name)
-            action_name
-          elsif phlex_view
-            '_handle_view_class'
-          elsif respond_to?(:action_missing, true)
-            '_handle_action_missing'
-          end
+          super || ('default_phlex_render' if phlex_view(action_name))
         end
 
-        def _handle_view_class(*_args)
-          render_view_class
+        def default_phlex_render
+          render assign_phlex_accessors(phlex_view(action_name).new)
+        end
+
+        # @param options [Hash] At a minimum this may contain an `:action` key, which will be used
+        #   as the name of the view to render. If no `:action` key is provided, the current
+        #   `action_name` is used.
+        def render_plex_view(options)
+          options[:action] ||= action_name
+
+          return unless (view = phlex_view(options[:action]))
+
+          render assign_phlex_accessors(view.new)
         end
 
         def phlex_view(action_name = @_action_name)

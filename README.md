@@ -36,6 +36,32 @@ class UsersController
 end
 ```
 
+#### `ControllerAttributes`
+
+Include this module in your Phlex views to get access to the controller's instance variables. It
+provides an explicit interface for accessing controller instance variables from the view.
+
+```ruby
+class Views::Users::Index < Views::Base
+  include Phlexible::Rails::ControllerAttributes
+
+  controller_attribute :first_name, :last_name
+
+  def template
+    h1 { "#{@first_name} #{@last_name}" }
+  end
+end
+```
+
+##### Options
+
+- `attr_reader:` - If set to `true`, an `attr_reader` will be defined for the given attributes.
+- `alias:` - If set, the given attribute will be aliased to the given alias value.
+
+```ruby
+controller_attribute :users, attr_reader: true, alias: :my_users
+```
+
 #### `Responder`
 
 If you use [Responders](https://github.com/heartcombo/responders), Phlexible provides a responder to
@@ -65,23 +91,11 @@ class UsersController < ApplicationController
 end
 ```
 
-As Phlex views expect explicit arguments, you can pass these in the `:view_options` keyword
-argument:
-
-```ruby
-class UsersController < ApplicationController
-  def index
-    respond_with User.all, view_options: { page: 1 }
-  end
-end
-
-class Views::Users::Index < Phlex::HTML
-  def initialize(users, page:); end
-end
-```
-
-This responder requires the use of `ActionController::ImplicitRender`, so dont't forget to include
+This responder requires the use of `ActionController::ImplicitRender`, so don't forget to include
 that in your `ApplicationController`.
+
+If you use `ControllerAttributes` in your view, and define a `resource` attribute, the responder
+will pass that to your view.
 
 #### `AElement`
 

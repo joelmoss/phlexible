@@ -24,8 +24,10 @@ module Phlexible
 
         def assign_phlex_accessors(pview)
           pview.tap do |view|
-            view.__controller_attributes__.each do |attr|
-              view.instance_variable_set :"@#{attr}", view_assigns[attr.to_s]
+            if view.respond_to?(:__controller_attributes__)
+              view.__controller_attributes__.each do |attr|
+                view.instance_variable_set :"@#{attr}", view_assigns[attr.to_s]
+              end
             end
           end
         end

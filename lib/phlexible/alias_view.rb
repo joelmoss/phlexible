@@ -32,7 +32,6 @@ module Phlexible
     def alias_view(element, view_class)
       define_method element do |*args, **kwargs, &blk|
         render view_class.call.new(*args, **kwargs), &blk
-        # view_class.call.new(*args, **kwargs).call(@_target, view_context: @_view_context, parent: self, &blk)
       end
     end
   end

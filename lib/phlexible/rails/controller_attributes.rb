@@ -35,7 +35,14 @@ module Phlexible
 
           names.each do |name|
             attr_reader name if kwargs[:attr_reader]
-            alias_method kwargs[:alias], name if kwargs[:alias]
+
+            if kwargs[:alias]
+              if kwargs[:attr_reader]
+                alias_method kwargs[:alias], name
+              else
+                define_method(kwargs[:alias]) { instance_variable_get :"@#{name}" }
+              end
+            end
           end
         end
       end

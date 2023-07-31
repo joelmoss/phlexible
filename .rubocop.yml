@@ -3,16 +3,20 @@ AllCops:
   SuggestExtensions: false
   NewCops: enable
 
-Style/Documentation:
-  Enabled: false
-Metrics/BlockLength:
-  Exclude:
-    - test/**/*
 Lint/ConstantDefinitionInBlock:
   Exclude:
     - test/**/*
+
+Style/Documentation:
+  Enabled: false
 Style/ClassAndModuleChildren:
   Exclude:
     - fixtures/**/*
+
+Metrics/BlockLength:
+  Exclude:
+    - test/**/*
 Metrics/MethodLength:
-  Max: 15
+  Max: 20
+Metrics/CyclomaticComplexity:
+  Max: 8

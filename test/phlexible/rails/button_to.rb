@@ -65,6 +65,14 @@ describe Phlexible::Rails::ButtonTo do
     end
   end
 
+  with 'options.params' do
+    it 'renders hidden input for each' do
+      output = render subject.new('/', params: { name: 'Joel' }) { 'My Button' }
+
+      expect(output.at_css('input[name="name"]')['value']).to be == 'Joel'
+    end
+  end
+
   describe 'CSRF' do
     let(:subject) { Phlexible::Rails::ButtonTo }
     let(:view_context) { controller.view_context }

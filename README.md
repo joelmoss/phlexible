@@ -38,8 +38,7 @@ end
 
 #### `ControllerAttributes`
 
-Include this module in your Phlex views to get access to the controller's instance variables. It
-provides an explicit interface for accessing controller instance variables from the view.
+Include this module in your Phlex views to get access to the controller's instance variables. It provides an explicit interface for accessing controller instance variables from the view.
 
 ```ruby
 class Views::Users::Index < Views::Base
@@ -64,9 +63,7 @@ controller_attribute :users, attr_reader: true, alias: :my_users
 
 #### `Responder`
 
-If you use [Responders](https://github.com/heartcombo/responders), Phlexible provides a responder to
-support implicit rendering similar to `ActionController::ImplicitRender` above. It will render the
-Phlex view using `respond_with` if one exists, and fall back to default rendering.
+If you use [Responders](https://github.com/heartcombo/responders), Phlexible provides a responder to support implicit rendering similar to `ActionController::ImplicitRender` above. It will render the Phlex view using `respond_with` if one exists, and fall back to default rendering.
 
 Just include it in your ApplicationResponder:
 
@@ -91,20 +88,15 @@ class UsersController < ApplicationController
 end
 ```
 
-This responder requires the use of `ActionController::ImplicitRender`, so don't forget to include
-that in your `ApplicationController`.
+This responder requires the use of `ActionController::ImplicitRender`, so don't forget to include that in your `ApplicationController`.
 
-If you use `ControllerAttributes` in your view, and define a `resource` attribute, the responder
-will pass that to your view.
+If you use `ControllerAttributes` in your view, and define a `resource` attribute, the responder will pass that to your view.
 
 #### `AElement`
 
-No need to call Rails `link_to` helper, when you can simply render an anchor tag directly with
-Phlex. But unfortunately that means you lose some of the magic that `link_to` provides. Especially
-the automatic resolution of URL's and Rails routes.
+No need to call Rails `link_to` helper, when you can simply render an anchor tag directly with Phlex. But unfortunately that means you lose some of the magic that `link_to` provides. Especially the automatic resolution of URL's and Rails routes.
 
-The `Phlexible::Rails::AElement` module passes through the `href` attribute to Rails `url_for`
-helper. So you can do this:
+The `Phlexible::Rails::AElement` module passes through the `href` attribute to Rails `url_for` helper. So you can do this:
 
 ```ruby
 Rails.application.routes.draw do
@@ -126,8 +118,7 @@ end
 
 Generates a form containing a single button that submits to the URL created by the set of options.
 
-It is similar to Rails `button_to` helper, which accepts the URL or route helper as the first
-argument, and the value/content of the button as the block.
+It is similar to Rails `button_to` helper, which accepts the URL or route helper as the first argument, and the value/content of the button as the block.
 
 ```ruby
 Phlexible::Rails::ButtonTo.new(:root) { 'My Button' }
@@ -135,8 +126,7 @@ Phlexible::Rails::ButtonTo.new(:root) { 'My Button' }
 
 The url argument accepts the same options as Rails `url_for`.
 
-The form submits a POST request by default. You can specify a different HTTP verb via the :method
-option.
+The form submits a POST request by default. You can specify a different HTTP verb via the :method option.
 
 ```ruby
 Phlexible::Rails::ButtonTo.new(:root, method: :patch) { 'My Button' }
@@ -144,11 +134,11 @@ Phlexible::Rails::ButtonTo.new(:root, method: :patch) { 'My Button' }
 
 ##### Options
 
-- `:class` - Specify the HTML class name of the button (not the form).
+- `:class`      - Specify the HTML class name of the button (not the form).
 - `:form_class` - Specify the HTML class name of the form (default: 'button_to').
-- `:data` - This option can be used to add custom data attributes.
-- `:method` - Symbol of the HTTP verb. Supported verbs are :post (default), :get, :delete, :patch,
-              and :put.
+- `:data`       - This option can be used to add custom data attributes.
+- `:params`     - Hash of parameters to be rendered as hidden fields within the form.
+- `:method`     - Symbol of the HTTP verb. Supported verbs are :post (default), :get, :delete, :patch, and :put.
 
 ### `AliasView`
 
@@ -184,9 +174,7 @@ end
 
 ### PageTitle
 
-Helper to assist in defining page titles within Phlex views. Also includes support for nested views,
-where each desendent view class will have its title prepended to the page title. Simply assign the
-title to the `page_title` class variable:
+Helper to assist in defining page titles within Phlex views. Also includes support for nested views, where each desendent view class will have its title prepended to the page title. Simply assign the title to the `page_title` class variable:
 
 ```ruby
 class MyView
@@ -204,7 +192,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/joelmoss/phlexible. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/joelmoss/phlexible/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at <https://github.com/joelmoss/phlexible>. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/joelmoss/phlexible/blob/master/CODE_OF_CONDUCT.md).
 
 ## License
 

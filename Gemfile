@@ -8,5 +8,5 @@ gemspec
 gem 'combustion'
 gem 'phlex-testing-nokogiri'
 gem 'rake', '~> 13.0'
-gem 'rubocop', '~> 1.21'
-gem 'sus', '~> 0.20.0'
+gem 'rubocop', '~> 1.55'
+gem 'sus'

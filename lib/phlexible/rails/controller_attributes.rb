@@ -18,6 +18,8 @@
 #   - `attr_reader:` - If set to `true`, an `attr_reader` will be defined for the given attributes.
 #   - `alias:` - If set, the given attribute will be aliased to the given alias value.
 #
+# NOTE: Phlexible::Rails::ActionController::ImplicitRender is required for this to work.
+#
 module Phlexible
   module Rails
     module ControllerAttributes

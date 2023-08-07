@@ -6,7 +6,7 @@
 #     def index
 #       render Views::Users::Index.new
 #     end
-
+#
 #     def show
 #       render Views::Users::Show.new(user)
 #     end

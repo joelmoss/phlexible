@@ -30,6 +30,8 @@ module Phlexible
           pview.tap do |view|
             if view.respond_to?(:__controller_attributes__)
               view.__controller_attributes__.each do |attr|
+                raise ControllerAttributes::UndefinedVariable, attr unless view_assigns.key?(attr.to_s)
+
                 view.instance_variable_set :"@#{attr}", view_assigns[attr.to_s]
               end
             end

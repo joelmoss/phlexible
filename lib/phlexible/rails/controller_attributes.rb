@@ -25,6 +25,14 @@ module Phlexible
     module ControllerAttributes
       extend ActiveSupport::Concern
 
+      class UndefinedVariable < NameError
+        def initialize(name)
+          @variable_name = name
+          super "Attempted to expose controller attribute `#{@variable_name}`, but instance " \
+                'variable is not defined in the controller.'
+        end
+      end
+
       included do
         class_attribute :__controller_attributes__, instance_predicate: false, default: Set.new
       end

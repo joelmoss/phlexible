@@ -57,8 +57,14 @@ module Phlexible
           render assign_phlex_accessors(view.new)
         end
 
+        private
+
         def phlex_view(action_name = @_action_name)
-          "views/#{controller_path}/#{action_name}".classify.safe_constantize
+          phlex_view_path(action_name).classify.constantize
+        end
+
+        def phlex_view_path(action_name)
+          "#{controller_path}/#{action_name}_view"
         end
       end
     end

@@ -54,7 +54,7 @@ module Phlexible
 
           return unless (view = phlex_view(options[:action]))
 
-          render assign_phlex_accessors(view.new)
+          render assign_phlex_accessors(view.new), options
         end
 
         private

@@ -36,6 +36,7 @@ describe Phlexible::Rails::ButtonTo do
       output = render subject.new('/', method: :get) { 'My Button' }
 
       expect(output.at_css('form')[:method]).to be == 'get'
+      expect(output.at_css('form')[:class]).to be == 'button_to'
       expect(output.at_css('input[name="_method"]')).to be(:nil?)
       expect(output.at_css('input[name="authenticity_token"]')).to be(:nil?)
     end
@@ -54,6 +55,14 @@ describe Phlexible::Rails::ButtonTo do
       output = render subject.new('/', form_class: 'foo') { 'My Button' }
 
       expect(output.at_css('form')[:class]).to be == 'foo'
+    end
+  end
+
+  with 'options.form_attributes' do
+    it 'passes attributes to form' do
+      output = render subject.new('/', form_attributes: { id: 'foo' }) { 'My Button' }
+
+      expect(output.at_css('form')[:id]).to be == 'foo'
     end
   end
 

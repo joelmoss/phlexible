@@ -134,11 +134,11 @@ Phlexible::Rails::ButtonTo.new(:root, method: :patch) { 'My Button' }
 
 ##### Options
 
-- `:class`      - Specify the HTML class name of the button (not the form).
-- `:form_class` - Specify the HTML class name of the form (default: 'button_to').
-- `:data`       - This option can be used to add custom data attributes.
-- `:params`     - Hash of parameters to be rendered as hidden fields within the form.
-- `:method`     - Symbol of the HTTP verb. Supported verbs are :post (default), :get, :delete, :patch, and :put.
+- `:class` - Specify the HTML class name of the button (not the form).
+- `:form_attributes` - Hash of HTML attributes for the form tag.
+- `:data` - This option can be used to add custom data attributes.
+- `:params` - Hash of parameters to be rendered as hidden fields within the form.
+- `:method` - Symbol of the HTTP verb. Supported verbs are :post (default), :get, :delete, :patch, and :put.
 
 ### `AliasView`
 

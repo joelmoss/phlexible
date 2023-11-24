@@ -7,11 +7,12 @@
 # option.
 #
 # Additional arguments are passed through to the button element, with a few exceptions:
-#  - :method - Symbol of HTTP verb. Supported verbs are :post, :get, :delete, :patch, and :put. By
-#    default it will be :post.
-#  - :form_class - This controls the class of the form within which the submit button will be
-#    placed. By default it will be 'button_to'.
-#  - :params - Hash of parameters to be rendered as hidden fields within the form.
+# - :method - Symbol of HTTP verb. Supported verbs are :post, :get, :delete, :patch, and :put.
+#   Default is :post.
+# - :form_attributes - Hash of HTML attributes to be rendered on the form tag.
+# - :form_class - This controls the class of the form within which the submit button will be placed.
+#   Default is 'button_to'. @deprecated: use :form_attributes instead if you want to override this.
+# - :params - Hash of parameters to be rendered as hidden fields within the form.
 module Phlexible
   module Rails
     module ButtonToConcerns
@@ -23,15 +24,14 @@ module Phlexible
         @options = options
       end
 
-      # rubocop:disable Metrics/AbcSize
-      def template(&block)
+      def template(&block) # rubocop:disable Metrics/AbcSize
         action = helpers.url_for(@url)
         @options = DEFAULT_OPTIONS.merge((@options || {}).symbolize_keys)
 
         method = (@options.delete(:method).presence || method_for_options(@options)).to_s
         form_method = method == 'get' ? 'get' : 'post'
 
-        form action: action, class: @options.delete(:form_class), method: form_method do
+        form action: action, method: form_method, **form_attributes do
           method_tag method
           form_method == 'post' && token_input(action, method.empty? ? 'post' : method)
           param_inputs
@@ -39,9 +39,15 @@ module Phlexible
           block_given? ? button(**button_attrs, &block) : button(**button_attrs) { @name }
         end
       end
-      # rubocop:enable Metrics/AbcSize
 
       private
+
+      def form_attributes
+        {
+          class: @options.delete(:form_class), # @deprecated
+          **(@options.delete(:form_attributes) || {})
+        }
+      end
 
       def button_attrs
         {
@@ -83,8 +89,8 @@ module Phlexible
         end
       end
 
-      # Returns an array of hashes each containing :name and :value keys
-      # suitable for use as the names and values of form input fields:
+      # Returns an array of hashes each containing :name and :value keys suitable for use as the
+      # names and values of form input fields:
       #
       #   to_form_params(name: 'David', nationality: 'Danish')
       #   # => [{name: 'name', value: 'David'}, {name: 'nationality', value: 'Danish'}]

@@ -23,7 +23,33 @@
 module Phlexible
   module Rails
     module ControllerAttributes
-      extend ActiveSupport::Concern
+      module Layout
+        def self.included(klass)
+          klass.extend ClassMethods
+        end
+
+        module ClassMethods
+          def render(view, _locals)
+            component = new
+
+            # Assign controller attributes to the layout.
+            view.controller.assign_phlex_accessors component if view.controller.respond_to? :assign_phlex_accessors
+
+            component.call(view_context: view) do |yielded|
+              output = yielded.is_a?(Symbol) ? view.view_flow.get(yielded) : yield
+
+              component.unsafe_raw(output) if output.is_a?(ActiveSupport::SafeBuffer)
+
+              nil
+            end
+          end
+        end
+      end
+
+      def self.included(klass)
+        klass.class_attribute :__controller_attributes__, instance_predicate: false, default: Set.new
+        klass.extend ClassMethods
+      end
 
       class UndefinedVariable < NameError
         def initialize(name)
@@ -33,12 +59,10 @@ module Phlexible
         end
       end
 
-      included do
-        class_attribute :__controller_attributes__, instance_predicate: false, default: Set.new
-      end
+      module ClassMethods
+        def controller_attribute(*names, **kwargs) # rubocop:disable Metrics/AbcSize,Metrics/PerceivedComplexity
+          include Layout if include?(Phlex::Rails::Layout) && !include?(Layout)
 
-      class_methods do
-        def controller_attribute(*names, **kwargs)
           self.__controller_attributes__ += names
 
           return if kwargs.empty?

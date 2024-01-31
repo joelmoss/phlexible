@@ -26,24 +26,12 @@ module Phlexible
           render_plex_view({ action: action_name }) || super
         end
 
-        def assign_phlex_accessors(pview)
-          pview.tap do |view|
-            if view.respond_to?(:__controller_attributes__)
-              view.__controller_attributes__.each do |attr|
-                raise ControllerAttributes::UndefinedVariable, attr unless view_assigns.key?(attr.to_s)
-
-                view.instance_variable_set :"@#{attr}", view_assigns[attr.to_s]
-              end
-            end
-          end
-        end
-
         def method_for_action(action_name)
           super || ('default_phlex_render' if phlex_view(action_name))
         end
 
         def default_phlex_render
-          render assign_phlex_accessors(phlex_view(action_name).new)
+          render phlex_view(action_name).new
         end
 
         # @param options [Hash] At a minimum this may contain an `:action` key, which will be used
@@ -54,7 +42,7 @@ module Phlexible
 
           return unless (view = phlex_view(options[:action]))
 
-          render assign_phlex_accessors(view.new), options
+          render view.new, options
         end
 
         private

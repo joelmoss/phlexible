@@ -57,48 +57,42 @@ module Phlexible
       end
 
       module ClassMethods
-        def controller_variable(*names, **kwargs) # rubocop:disable Metrics
+        def controller_variable(*names, **kwargs) # rubocop:disable Metrics/*
           if names.empty? && kwargs.empty?
-            raise ArgumentError, 'You must provide at least one variable name or a hash of ' \
+            raise ArgumentError, 'You must provide at least one variable name and/or a hash of ' \
                                  'variable names and options.'
           end
 
           allow_undefined = kwargs.delete(:allow_undefined)
+          as = kwargs.delete(:as)
 
-          if names.empty?
-            kwargs.each do |k, v|
-              if v.is_a?(Hash)
-                name = v.key?(:as) ? v[:as].to_s : k.to_s
+          if names.count > 1 && as
+            raise ArgumentError, 'You cannot provide the `as:` option when passing multiple ' \
+                                 'variable names.'
+          end
 
-                if v.key?(:allow_undefined)
-                  k = "#{k}!" unless v[:allow_undefined] # rubocop:disable Metrics/BlockNesting
-                elsif !allow_undefined
-                  k = "#{k}!"
-                end
-              else
-                name = v.to_s
-                k = "#{k}!" unless allow_undefined
+          names.each do |name|
+            name_as = as || name
+            name = "#{name}!" unless allow_undefined
+
+            self.__controller_variables__ += { name.to_s => name_as.to_s }
+          end
+
+          kwargs.each do |k, v|
+            if v.is_a?(Hash)
+              name = v.key?(:as) ? v[:as].to_s : k.to_s
+
+              if v.key?(:allow_undefined)
+                k = "#{k}!" unless v[:allow_undefined]
+              elsif !allow_undefined
+                k = "#{k}!"
               end
-
-              self.__controller_variables__ += { k.to_s => name }
+            else
+              name = v.to_s
+              k = "#{k}!" unless allow_undefined
             end
 
-            if kwargs.key?(:as)
-              raise ArgumentError, 'You cannot provide the `as:` option when passing multiple ' \
-                                   'variable names.'
-            end
-          else
-            if names.count > 1 && kwargs.key?(:as)
-              raise ArgumentError, 'You cannot provide the `as:` option when passing multiple ' \
-                                   'variable names.'
-            end
-
-            names.each do |name|
-              as = kwargs[:as] || name
-              name = "#{name}!" unless allow_undefined
-
-              self.__controller_variables__ += { name.to_s => as.to_s }
-            end
+            self.__controller_variables__ += { k.to_s => name }
           end
         end
       end

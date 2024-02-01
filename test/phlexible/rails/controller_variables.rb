@@ -39,6 +39,29 @@ describe Phlexible::Rails::ControllerVariables do
     expect(view.instance_variable_get(:@article_name)).to be == 'article1'
   end
 
+  it 'accepts multiple names' do
+    controller.instance_variable_set :@first_name, 'Joel'
+    controller.instance_variable_set :@last_name, 'Moss'
+    Views::Articles::Show.controller_variable(:first_name, :last_name)
+
+    render(view = Views::Articles::Show.new)
+
+    expect(view.instance_variable_get(:@first_name)).to be == 'Joel'
+    expect(view.instance_variable_get(:@last_name)).to be == 'Moss'
+  end
+
+  it 'accepts names and hash' do
+    controller.instance_variable_set :@first_name, 'Joel'
+    controller.instance_variable_set :@last_name, 'Moss'
+    Views::Articles::Show.controller_variable(:first_name, last_name: :surname)
+
+    render(view = Views::Articles::Show.new)
+
+    expect(view.instance_variable_get(:@first_name)).to be == 'Joel'
+    expect(view.instance_variable_get(:@last_name)).to be_nil
+    expect(view.instance_variable_get(:@surname)).to be == 'Moss'
+  end
+
   it 'accepts hash with :as key' do
     controller.instance_variable_set :@article, 'article1'
     Views::Articles::Show.controller_variable(article: { as: :article_name })

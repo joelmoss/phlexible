@@ -36,7 +36,7 @@ module Phlexible
         end
       end
 
-      def before_template # rubocop:disable Metrics/AbcSize
+      def before_template
         if respond_to?(:__controller_variables__)
           view_assigns = helpers.controller.view_assigns
 
@@ -49,7 +49,7 @@ module Phlexible
 
             raise ControllerVariables::UndefinedVariable, k if !allow_undefined && !view_assigns.key?(k)
 
-            instance_variable_set(:"@#{v}", view_assigns[k]) unless instance_variable_defined?(:"@#{v}")
+            instance_variable_set(:"@#{v}", view_assigns[k])
           end
         end
 

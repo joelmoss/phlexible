@@ -57,7 +57,11 @@ end
 `controller_variable` accepts one or many symbols, or a hash of symbols to options.
 
 - `as:` - If set, the given attribute will be renamed to the given value. Helpful to avoid naming conflicts.
-- `allow_undefined:` - By default, if the instance variable is not defined in the controller, an exception will be raised. If this option is to `true`, an error will not be raised.
+- `allow_undefined:` - By default, if the instance variable is not defined in the controller, an
+  exception will be raised. If this option is to `true`, an error will not be raised.
+
+You can also pass a hash of attributes to `controller_variable`, where the key is the controller
+attribute, and the value is the renamed value, or options hash.
 
 ```ruby
 class Views::Users::Index < Views::Base
@@ -70,6 +74,8 @@ class Views::Users::Index < Views::Base
   end
 end
 ```
+
+Please note that defining a variable with the same name as an existing variable in the view will be overwritten.
 
 #### `Responder`
 

@@ -154,7 +154,36 @@ Phlexible::Rails::ButtonTo.new(:root, method: :patch) { 'My Button' }
 - `:form_attributes` - Hash of HTML attributes for the form tag.
 - `:data` - This option can be used to add custom data attributes.
 - `:params` - Hash of parameters to be rendered as hidden fields within the form.
-- `:method` - Symbol of the HTTP verb. Supported verbs are :post (default), :get, :delete, :patch, and :put.
+- `:method` - Symbol of the HTTP verb. Supported verbs are :post (default), :get, :delete, :patch,
+  and :put.
+
+#### `MetaTags`
+
+A super simple way to define and render meta tags in your Phlex views. Just render the
+`Phlexible::Rails::MetaTagsComponent` component in the head element of your page, and define the
+meta tags using the `meta_tag` method in your controllers.
+
+```ruby
+class MyController < ApplicationController
+  meta_tag :description, 'My description'
+  meta_tag :keywords, 'My keywords'
+end
+```
+
+```ruby
+class MyView < Phlex::HTML
+  def template
+    html do
+      head do
+        render Phlexible::Rails::MetaTagsComponent
+      end
+      body do
+        # ...
+      end
+    end
+  end
+end
+```
 
 ### `AliasView`
 

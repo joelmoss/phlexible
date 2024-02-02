@@ -38,6 +38,10 @@ end
 
 #### `ControllerVariables`
 
+> Available in **>= 1.0.0**
+
+> **NOTE:** Prior to **1.0.0**, this module was called `ControllerAttributes` with a very different API. This is no longer available since **1.0.0**.
+
 Include this module in your Phlex views to get access to the controller's instance variables. It provides an explicit interface for accessing controller instance variables from within the view.
 
 ```ruby
@@ -158,6 +162,9 @@ Phlexible::Rails::ButtonTo.new(:root, method: :patch) { 'My Button' }
   and :put.
 
 #### `MetaTags`
+
+> Available in **>= 1.0.0**
+
 
 A super simple way to define and render meta tags in your Phlex views. Just render the
 `Phlexible::Rails::MetaTagsComponent` component in the head element of your page, and define the

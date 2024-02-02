@@ -36,15 +36,15 @@ class UsersController
 end
 ```
 
-#### `ControllerAttributes`
+#### `ControllerVariables`
 
-Include this module in your Phlex views to get access to the controller's instance variables. It provides an explicit interface for accessing controller instance variables from the view.
+Include this module in your Phlex views to get access to the controller's instance variables. It provides an explicit interface for accessing controller instance variables from within the view.
 
 ```ruby
 class Views::Users::Index < Views::Base
-  include Phlexible::Rails::ControllerAttributes
+  include Phlexible::Rails::ControllerVariables
 
-  controller_attribute :first_name, :last_name
+  controller_variable :first_name, :last_name
 
   def template
     h1 { "#{@first_name} #{@last_name}" }
@@ -54,12 +54,28 @@ end
 
 ##### Options
 
-- `attr_reader:` - If set to `true`, an `attr_reader` will be defined for the given attributes.
-- `alias:` - If set, the given attribute will be aliased to the given alias value.
+`controller_variable` accepts one or many symbols, or a hash of symbols to options.
+
+- `as:` - If set, the given attribute will be renamed to the given value. Helpful to avoid naming conflicts.
+- `allow_undefined:` - By default, if the instance variable is not defined in the controller, an
+  exception will be raised. If this option is to `true`, an error will not be raised.
+
+You can also pass a hash of attributes to `controller_variable`, where the key is the controller
+attribute, and the value is the renamed value, or options hash.
 
 ```ruby
-controller_attribute :users, attr_reader: true, alias: :my_users
+class Views::Users::Index < Views::Base
+  include Phlexible::Rails::ControllerVariables
+
+  controller_variable last_name: :surname, first_name: { as: :given_name, allow_undefined: true }
+
+  def template
+    h1 { "#{@given_name} #{@surname}" }
+  end
+end
 ```
+
+Please note that defining a variable with the same name as an existing variable in the view will be overwritten.
 
 #### `Responder`
 
@@ -90,7 +106,7 @@ end
 
 This responder requires the use of `ActionController::ImplicitRender`, so don't forget to include that in your `ApplicationController`.
 
-If you use `ControllerAttributes` in your view, and define a `resource` attribute, the responder will pass that to your view.
+If you use `ControllerVariables` in your view, and define a `resource` attribute, the responder will pass that to your view.
 
 #### `AElement`
 
@@ -138,7 +154,36 @@ Phlexible::Rails::ButtonTo.new(:root, method: :patch) { 'My Button' }
 - `:form_attributes` - Hash of HTML attributes for the form tag.
 - `:data` - This option can be used to add custom data attributes.
 - `:params` - Hash of parameters to be rendered as hidden fields within the form.
-- `:method` - Symbol of the HTTP verb. Supported verbs are :post (default), :get, :delete, :patch, and :put.
+- `:method` - Symbol of the HTTP verb. Supported verbs are :post (default), :get, :delete, :patch,
+  and :put.
+
+#### `MetaTags`
+
+A super simple way to define and render meta tags in your Phlex views. Just render the
+`Phlexible::Rails::MetaTagsComponent` component in the head element of your page, and define the
+meta tags using the `meta_tag` method in your controllers.
+
+```ruby
+class MyController < ApplicationController
+  meta_tag :description, 'My description'
+  meta_tag :keywords, 'My keywords'
+end
+```
+
+```ruby
+class MyView < Phlex::HTML
+  def template
+    html do
+      head do
+        render Phlexible::Rails::MetaTagsComponent
+      end
+      body do
+        # ...
+      end
+    end
+  end
+end
+```
 
 ### `AliasView`
 

@@ -48,7 +48,7 @@ module Phlexible
         private
 
         def phlex_view(action_name = @_action_name)
-          phlex_view_path(action_name).classify.safe_constantize
+          phlex_view_path(action_name).camelize.safe_constantize
         end
 
         def phlex_view_path(action_name)

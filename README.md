@@ -50,7 +50,7 @@ class Views::Users::Index < Views::Base
 
   controller_variable :first_name, :last_name
 
-  def template
+  def view_template
     h1 { "#{@first_name} #{@last_name}" }
   end
 end
@@ -73,7 +73,7 @@ class Views::Users::Index < Views::Base
 
   controller_variable last_name: :surname, first_name: { as: :given_name, allow_undefined: true }
 
-  def template
+  def view_template
     h1 { "#{@given_name} #{@surname}" }
   end
 end
@@ -128,7 +128,7 @@ end
 class MyView < Phlex::HTML
   include Phlexible::Rails::AElement
 
-  def template
+  def view_template
     a(href: :articles) { 'View articles' }
   end
 end
@@ -165,7 +165,6 @@ Phlexible::Rails::ButtonTo.new(:root, method: :patch) { 'My Button' }
 
 > Available in **>= 1.0.0**
 
-
 A super simple way to define and render meta tags in your Phlex views. Just render the
 `Phlexible::Rails::MetaTagsComponent` component in the head element of your page, and define the
 meta tags using the `meta_tag` method in your controllers.
@@ -179,7 +178,7 @@ end
 
 ```ruby
 class MyView < Phlex::HTML
-  def template
+  def view_template
     html do
       head do
         render Phlexible::Rails::MetaTagsComponent
@@ -200,7 +199,7 @@ So instead of:
 
 ```ruby
 class MyView < Phlex::HTML
-  def template
+  def view_template
     div do
       render My::Awesome::Component.new
     end
@@ -216,7 +215,7 @@ class MyView < Phlex::HTML
 
   alias_view :awesome, -> { My::Awesome::Component }
 
-  def template
+  def view_template
     div do
       awesome
     end

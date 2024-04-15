@@ -6,7 +6,7 @@ describe Phlexible::AliasView do
   include Phlex::Testing::ViewHelper
 
   class IconView < Phlex::HTML
-    def template
+    def view_template
       # pp 1, block
       span { 'I am an icon!' }
       yield if block_given?
@@ -18,7 +18,7 @@ describe Phlexible::AliasView do
 
     alias_view :icon, -> { IconView }
 
-    def template
+    def view_template
       div do
         icon
       end
@@ -30,7 +30,7 @@ describe Phlexible::AliasView do
 
     alias_view :icon, -> { IconView }
 
-    def template
+    def view_template
       div do
         icon do
           div { 'boo!' }

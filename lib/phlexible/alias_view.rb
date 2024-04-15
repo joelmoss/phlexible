@@ -7,7 +7,7 @@ module Phlexible
   # So instead of:
   #
   #   class MyView < Phlex::HTML
-  #     def template
+  #     def view_template
   #       div do
   #         render My::Awesome::Component.new
   #       end
@@ -21,7 +21,7 @@ module Phlexible
   #
   #     alias_view :awesome, -> { My::Awesome::Component }
   #
-  #     def template
+  #     def view_template
   #       div do
   #         awesome
   #       end

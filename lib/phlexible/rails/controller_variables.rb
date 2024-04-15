@@ -9,7 +9,7 @@
 #   class Views::Users::Index < Views::Base
 #     controller_variable :user_name
 #
-#     def template
+#     def view_template
 #       h1 { @user_name }
 #     end
 #   end
@@ -31,8 +31,8 @@ module Phlexible
       class UndefinedVariable < NameError
         def initialize(name)
           @variable_name = name
-          super "Attempted to expose controller variable `#{@variable_name}`, but instance " \
-                'variable is not defined in the controller.'
+          super("Attempted to expose controller variable `#{@variable_name}`, but instance " \
+                'variable is not defined in the controller.')
         end
       end
 

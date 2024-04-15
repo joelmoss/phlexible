@@ -3,5 +3,5 @@
 class Views::Articles::Show < Phlex::HTML
   include Phlexible::Rails::ControllerVariables
 
-  def template; end
+  def view_template; end
 end

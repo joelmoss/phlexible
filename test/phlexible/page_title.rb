@@ -10,7 +10,7 @@ describe Phlexible::PageTitle do
 
     self.page_title = 'Page One'
 
-    def template
+    def view_template
       div { page_title }
     end
   end

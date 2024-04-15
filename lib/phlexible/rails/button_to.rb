@@ -24,7 +24,7 @@ module Phlexible
         @options = options
       end
 
-      def template(&block) # rubocop:disable Metrics/AbcSize
+      def view_template(&block) # rubocop:disable Metrics/AbcSize
         action = helpers.url_for(@url)
         @options = DEFAULT_OPTIONS.merge((@options || {}).symbolize_keys)
 

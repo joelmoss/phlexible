@@ -18,10 +18,15 @@
 #     include Phlexible::Rails::ActionController::ImplicitRender
 #   end
 #
+
+require_relative "base"
+
 module Phlexible
   module Rails
     module ActionController
       module ImplicitRender
+        include Base
+
         def default_render
           render_plex_view({ action: action_name }) || super
         end
@@ -40,19 +45,9 @@ module Phlexible
         def render_plex_view(options)
           options[:action] ||= action_name
 
-          return unless (view = phlex_view(options[:action]))
+          return unless (view = phlex_view({action: options[:action]}))
 
           render view.new, options
-        end
-
-        private
-
-        def phlex_view(action_name = @_action_name)
-          phlex_view_path(action_name).camelize.safe_constantize
-        end
-
-        def phlex_view_path(action_name)
-          "#{controller_path}/#{action_name}_view"
         end
       end
     end

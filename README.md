@@ -36,6 +36,33 @@ class UsersController
 end
 ```
 
+#### `ActionController::RenderAction`
+
+Adds support for calling views by their action name. So instead of this:
+
+```ruby
+class UsersController
+  def other_index
+    render Views::Users::Index.new
+  end
+end
+```
+
+You can do this:
+
+```ruby
+class UsersController
+  include Phlexible::Rails::ActionController::RenderAction
+
+  def other_index
+    render :index
+    # or render "users/index"
+  end
+end
+```
+
+Any other parameters passed will be passed as named parameters to the view's constructor.
+
 #### `ControllerVariables`
 
 > Available in **>= 1.0.0**

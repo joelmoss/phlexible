@@ -15,6 +15,7 @@ module Phlexible
     module ActionController
       autoload :ImplicitRender, 'phlexible/rails/action_controller/implicit_render'
       autoload :MetaTags, 'phlexible/rails/action_controller/meta_tags'
+      autoload :RenderAction, 'phlexible/rails/action_controller/render_action'
     end
   end
 end

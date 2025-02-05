@@ -58,13 +58,11 @@ GEM
     loofah (2.22.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
+    mini_portile2 (2.8.8)
     minitest (5.22.3)
     mutex_m (0.2.0)
-    nokogiri (1.16.4-arm64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.16.4-x86_64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.16.4-x86_64-linux)
+    nokogiri (1.16.4)
+      mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     parallel (1.24.0)
     parser (3.3.0.5)
@@ -136,6 +134,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-22
+  arm64-darwin-24
   x86_64-darwin-19
   x86_64-linux
 

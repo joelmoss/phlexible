@@ -36,11 +36,13 @@ module Phlexible
         end
       end
 
-      def before_template
+      def before_template # rubocop:disable Metrics
         if respond_to?(:__controller_variables__)
           view_assigns = helpers.controller.view_assigns
+          view = @view
 
-          __controller_variables__.each do |k, v|
+          vars = (view&.__controller_variables__ || Set.new) + __controller_variables__
+          vars.each do |k, v|
             allow_undefined = true
             if k.ends_with?('!')
               allow_undefined = false
@@ -50,6 +52,7 @@ module Phlexible
             raise ControllerVariables::UndefinedVariable, k if !allow_undefined && !view_assigns.key?(k)
 
             instance_variable_set(:"@#{v}", view_assigns[k])
+            view&.instance_variable_set(:"@#{v}", view_assigns[k])
           end
         end
 

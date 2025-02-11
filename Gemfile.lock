@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    phlexible (2.1.0)
+    phlexible (2.2.0)
       phlex (>= 1.10.0, < 2.0.0)
       phlex-rails (>= 1.2.1, < 2.0.0)
 

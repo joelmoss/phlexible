@@ -36,6 +36,32 @@ class UsersController
 end
 ```
 
+#### `Callbacks`
+
+While Phlex does have `before_template`, `after_template`, and `around_template` hooks, they must be defined as regular Ruby methods, meaning you have to always remember to call `super` when redefining any hook method.
+
+This module provides a more Rails-like interface for defining callbacks in your Phlex views, using `ActiveSupport::Callbacks`. It implements the same `before_template`, `after_template`, and `around_template` hooks as callbacks.
+
+```ruby
+class Views::Users::Index < Views::Base
+  include Phlexible::Callbacks
+
+  before_template :set_title
+
+  def view_template
+    h1 { @title }
+  end
+
+  private
+
+    def set_title
+      @title = 'Users'
+    end
+end
+```
+
+You can still use the regular `before_template`, `after_template`, and `around_template` hooks as well, but I recommend that if you include this module, that you use callbacks instead.
+
 #### `ControllerVariables`
 
 > Available in **>= 1.0.0**

@@ -7,6 +7,7 @@ describe Phlexible::Rails::ControllerVariables do
   include Phlex::Testing::Rails::ViewHelper
 
   def before
+    # Reset controller variables
     Views::Articles::Show.__controller_variables__ = Set.new
   end
 

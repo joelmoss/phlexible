@@ -26,6 +26,8 @@ module Phlexible
       def self.included(klass)
         klass.class_attribute :__controller_variables__, instance_predicate: false, default: Set.new
         klass.extend ClassMethods
+        klass.include Callbacks
+        klass.before_template :define_controller_variables
       end
 
       class UndefinedVariable < NameError
@@ -36,27 +38,27 @@ module Phlexible
         end
       end
 
-      def before_template # rubocop:disable Metrics
-        if respond_to?(:__controller_variables__)
-          view_assigns = helpers.controller.view_assigns
-          view = @view
+      private
 
-          vars = (view&.__controller_variables__ || Set.new) + __controller_variables__
-          vars.each do |k, v|
-            allow_undefined = true
-            if k.ends_with?('!')
-              allow_undefined = false
-              k = k.chop
-            end
+      def define_controller_variables # rubocop:disable Metrics
+        return unless respond_to?(:__controller_variables__)
 
-            raise ControllerVariables::UndefinedVariable, k if !allow_undefined && !view_assigns.key?(k)
+        view_assigns = helpers.controller.view_assigns
+        view = @view
 
-            instance_variable_set(:"@#{v}", view_assigns[k])
-            view&.instance_variable_set(:"@#{v}", view_assigns[k])
+        vars = (view&.__controller_variables__ || Set.new) + __controller_variables__
+        vars.each do |k, v|
+          allow_undefined = true
+          if k.ends_with?('!')
+            allow_undefined = false
+            k = k.chop
           end
-        end
 
-        super
+          raise ControllerVariables::UndefinedVariable, k if !allow_undefined && !view_assigns.key?(k)
+
+          instance_variable_set(:"@#{v}", view_assigns[k])
+          view&.instance_variable_set(:"@#{v}", view_assigns[k])
+        end
       end
 
       module ClassMethods

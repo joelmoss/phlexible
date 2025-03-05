@@ -7,7 +7,6 @@ gemspec
 
 gem 'combustion'
 gem 'debug'
-gem 'phlex-testing-nokogiri'
 gem 'rake', '~> 13.0'
 gem 'rubocop', '~> 1.55'
 gem 'sus'

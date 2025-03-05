@@ -43,7 +43,7 @@ module Phlexible
       def define_controller_variables # rubocop:disable Metrics
         return unless respond_to?(:__controller_variables__)
 
-        view_assigns = helpers.controller.view_assigns
+        view_assigns = view_context.controller.view_assigns
         view = @view
 
         vars = (view&.__controller_variables__ || Set.new) + __controller_variables__

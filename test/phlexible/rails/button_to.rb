@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'test_render_helper'
 
 describe Phlexible::Rails::ButtonTo do
-  include TestRenderHelper
+  include RenderHelper
 
   it 'renders a form' do
     output = render_to_nokogiri_fragment subject.new('/') { 'My Button' }

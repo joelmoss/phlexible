@@ -5,4 +5,4 @@ require 'bundler'
 
 Bundler.require :test
 
-require_relative 'view_helper'
+require_relative 'render_helper'

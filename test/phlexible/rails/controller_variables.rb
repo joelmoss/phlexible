@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'test_render_helper'
 
 describe Phlexible::Rails::ControllerVariables do
-  include TestRenderHelper
+  include RenderHelper
 
   def before
     # Reset controller variables

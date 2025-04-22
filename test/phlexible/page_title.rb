@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-require 'test_render_helper'
-
 describe Phlexible::PageTitle do
-  include TestRenderHelper
+  include RenderHelper
 
   view_one = Class.new Phlex::HTML do
     include Phlexible::PageTitle

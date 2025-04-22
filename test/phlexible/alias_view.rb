@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-require 'test_render_helper'
-
 describe Phlexible::AliasView do
-  include TestRenderHelper
+  include RenderHelper
 
   class IconView < Phlex::HTML
     def view_template

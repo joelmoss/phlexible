@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module TestRenderHelper
+module RenderHelper
   def render_to_html(component)
     view_context.render(component)
   end

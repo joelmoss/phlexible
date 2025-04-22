@@ -3,7 +3,7 @@ PATH
   specs:
     phlexible (2.2.0)
       phlex (>= 1.10.0, < 3.0.0)
-      phlex-rails (>= 1.10.0, < 3.0.0)
+      phlex-rails (>= 1.2.0, < 3.0.0)
 
 GEM
   remote: https://rubygems.org/

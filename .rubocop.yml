@@ -2,6 +2,8 @@ AllCops:
   TargetRubyVersion: 3.3.0
   SuggestExtensions: false
   NewCops: enable
+  Exclude:
+    - gemfiles/**/*
 
 Lint/ConstantDefinitionInBlock:
   Exclude:

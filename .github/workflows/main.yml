@@ -10,11 +10,12 @@ on:
 jobs:
   tests:
     strategy:
+      fail-fast: false
       matrix:
         os: ["ubuntu-latest", "macos-latest"]
         ruby:
-          - "3.3.0"
-          - "3.4.0"
+          - "3.3"
+          - "3.4"
     runs-on: ${{ matrix.os }}
 
     env:
@@ -22,19 +23,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
+          cache-version: 1
       - run: bundle exec appraisal install
-      - run: bundle exec appraisal sus
+      - name: tests
+        run: bundle exec appraisal sus
 
   rubocop:
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v4
-
       - name: Setup
         uses: ruby/setup-ruby@v1
         with:

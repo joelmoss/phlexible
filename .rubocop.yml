@@ -13,10 +13,5 @@ Style/ClassAndModuleChildren:
   Exclude:
     - fixtures/**/*
 
-Metrics/BlockLength:
-  Exclude:
-    - test/**/*
-Metrics/MethodLength:
-  Max: 20
-Metrics/CyclomaticComplexity:
-  Max: 8
+Metrics:
+  Enabled: false

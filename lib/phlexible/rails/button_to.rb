@@ -33,7 +33,7 @@ module Phlexible
         @options = options
       end
 
-      def view_template(&block) # rubocop:disable Metrics/AbcSize
+      def view_template(&block)
         action = url_for(@url)
         @options = DEFAULT_OPTIONS.merge((@options || {}).symbolize_keys)
 

@@ -42,7 +42,7 @@ module Phlexible
 
       private
 
-      def define_controller_variables # rubocop:disable Metrics
+      def define_controller_variables
         return unless respond_to?(:__controller_variables__)
 
         view_assigns = view_assigns()
@@ -64,7 +64,8 @@ module Phlexible
       end
 
       module ClassMethods
-        def controller_variable(*names, **kwargs) # rubocop:disable Metrics/*
+        # /*
+        def controller_variable(*names, **kwargs)
           if names.empty? && kwargs.empty?
             raise ArgumentError, 'You must provide at least one variable name and/or a hash of ' \
                                  'variable names and options.'

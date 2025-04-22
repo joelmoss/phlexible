@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 module Phlexible
   module Rails
     module ViewAssigns
-
       def view_assigns
         if respond_to?(:view_context)
           # Phlex 2
@@ -11,7 +12,6 @@ module Phlexible
           helpers.controller.view_assigns
         end
       end
-
     end
   end
 end

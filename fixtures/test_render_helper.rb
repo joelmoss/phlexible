@@ -1,5 +1,6 @@
-module TestRenderHelper
+# frozen_string_literal: true
 
+module TestRenderHelper
   def render_to_html(component)
     view_context.render(component)
   end
@@ -23,5 +24,4 @@ module TestRenderHelper
   def controller
     @controller ||= ActionView::TestCase::TestController.new
   end
-
 end

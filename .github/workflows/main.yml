@@ -1,4 +1,4 @@
-name: Ruby
+name: main
 
 on:
   push:
@@ -17,22 +17,23 @@ jobs:
           - "3.4.0"
     runs-on: ${{ matrix.os }}
 
-    steps:
-      - uses: actions/checkout@v3
+    env:
+      RAILS_ENV: test
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-
-      - name: Tests
-        run: bundle exec sus
+      - run: bundle exec appraisal install
+      - run: bundle exec appraisal sus
 
   rubocop:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup
         uses: ruby/setup-ruby@v1
@@ -41,4 +42,4 @@ jobs:
           bundler-cache: true
 
       - name: Rubocop
-        run: bundle exec rubocop
+        run: bundle exec rubocop -P --fail-level C

@@ -16,6 +16,15 @@
 module Phlexible
   module Rails
     module ButtonToConcerns
+      extend ActiveSupport::Concern
+
+      included do
+        include Phlex::Rails::Helpers::URLFor
+        register_value_helper :protect_against_forgery?
+        register_value_helper :request_forgery_protection_token
+        register_value_helper :form_authenticity_token
+      end
+
       BUTTON_TAG_METHOD_VERBS = %w[patch put delete].freeze
       DEFAULT_OPTIONS = { method: 'post', form_class: 'button_to', params: {} }.freeze
 
@@ -25,7 +34,7 @@ module Phlexible
       end
 
       def view_template(&block) # rubocop:disable Metrics/AbcSize
-        action = helpers.url_for(@url)
+        action = url_for(@url)
         @options = DEFAULT_OPTIONS.merge((@options || {}).symbolize_keys)
 
         method = (@options.delete(:method).presence || method_for_options(@options)).to_s
@@ -67,10 +76,10 @@ module Phlexible
       end
 
       def token_input(action, method)
-        return unless helpers.protect_against_forgery?
+        return unless protect_against_forgery?
 
-        name = helpers.request_forgery_protection_token.to_s
-        value = helpers.form_authenticity_token(form_options: { action: action, method: method })
+        name = request_forgery_protection_token.to_s
+        value = form_authenticity_token(form_options: { action: action, method: method })
 
         input type: 'hidden', name: name, value: value, autocomplete: 'off'
       end

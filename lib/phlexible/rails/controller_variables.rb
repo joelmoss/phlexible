@@ -23,6 +23,8 @@
 module Phlexible
   module Rails
     module ControllerVariables
+      include ViewAssigns
+
       def self.included(klass)
         klass.class_attribute :__controller_variables__, instance_predicate: false, default: Set.new
         klass.extend ClassMethods
@@ -43,7 +45,7 @@ module Phlexible
       def define_controller_variables # rubocop:disable Metrics
         return unless respond_to?(:__controller_variables__)
 
-        view_assigns = helpers.controller.view_assigns
+        view_assigns = view_assigns()
         view = @view
 
         vars = (view&.__controller_variables__ || Set.new) + __controller_variables__

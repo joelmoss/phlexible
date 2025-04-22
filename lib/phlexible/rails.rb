@@ -4,6 +4,7 @@ require 'phlex-rails'
 
 module Phlexible
   module Rails
+    autoload :ViewAssigns, 'phlexible/rails/view_assigns'
     autoload :ControllerVariables, 'phlexible/rails/controller_variables'
     autoload :Responder, 'phlexible/rails/responder'
     autoload :AElement, 'phlexible/rails/a_element'

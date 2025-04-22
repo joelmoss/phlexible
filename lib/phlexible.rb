@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 require_relative 'phlexible/version'
-require 'phlex'
+require 'zeitwerk'
+require 'rails'
+require 'phlex-rails'
+
+loader = Zeitwerk::Loader.for_gem
+loader.setup
 
 module Phlexible
-  autoload :AliasView, 'phlexible/alias_view'
-  autoload :PageTitle, 'phlexible/page_title'
-  autoload :Callbacks, 'phlexible/callbacks'
-  autoload :Rails, 'phlexible/rails'
 end

@@ -251,7 +251,7 @@ end
 
 ### PageTitle
 
-Helper to assist in defining page titles within Phlex views. Also includes support for nested views, where each desendent view class will have its title prepended to the page title. Simply assign the title to the `page_title` class variable:
+Helper to assist in defining page titles within Phlex views. Also includes support for nested views, where each desendent view class will have its title prepended to the page title. Simply include *Phlexible::PageTitle* module and assign the title to the `page_title` class variable:
 
 ```ruby
 class MyView

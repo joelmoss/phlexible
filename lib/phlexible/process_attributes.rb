@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'phlex/version'
+
 # rubocop:disable Style/DocumentDynamicEvalDefinition
 module Phlexible::ProcessAttributes
   if Phlex::VERSION >= '2.0.0'

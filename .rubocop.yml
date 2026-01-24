@@ -12,7 +12,7 @@ AllCops:
   SuggestExtensions: false
   Exclude:
     - "gemfiles/**/*"
-    - "vendor/"
+    - "vendor/**/*"
 
 Naming/FileName:
   Exclude:

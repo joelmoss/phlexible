@@ -36,6 +36,26 @@ class UsersController
 end
 ```
 
+##### View Resolution
+
+By default, views are resolved using the `phlex_view_path` method, which constructs a path based on the controller and action name. For example, `UsersController#index` will look for `Users::IndexView`.
+
+You can customize this behavior by overriding `phlex_view_path` in your controller:
+
+```ruby
+class UsersController
+  include Phlexible::Rails::ActionController::ImplicitRender
+
+  private
+
+    def phlex_view_path(action_name)
+      "views/#{controller_path}/#{action_name}"
+    end
+end
+```
+
+This would resolve `UsersController#index` to `Views::Users::Index` instead.
+
 #### `Callbacks`
 
 While Phlex does have `before_template`, `after_template`, and `around_template` hooks, they must be defined as regular Ruby methods, meaning you have to always remember to call `super` when redefining any hook method.
@@ -261,6 +281,55 @@ end
 
 Then call the `page_title` method in the `<head>` of your page.
 
+### `ProcessAttributes`
+
+> This functionality is already built in to **Phlex >= 1**. This module is only needed for **Phlex >= 2**.
+
+Allows you to intercept and modify HTML element attributes before they are rendered. This is useful for adding default attributes, transforming values, or conditionally modifying attributes based on other attributes.
+
+Extend your view class with `Phlexible::ProcessAttributes` and define a `process_attributes` instance method that receives the attributes hash and returns the modified hash.
+
+```ruby
+class MyView < Phlex::HTML
+  extend Phlexible::ProcessAttributes
+
+  def process_attributes(attrs)
+    # Add a default class to all elements
+    attrs[:class] ||= 'my-default-class'
+    attrs
+  end
+
+  def view_template
+    div(id: 'container') { 'Hello' }
+  end
+end
+```
+
+This will output:
+
+```html
+<div id="container" class="my-default-class">Hello</div>
+```
+
+The `process_attributes` method is called for all standard HTML elements and void elements, as well as any custom elements registered with `register_element`.
+
+```ruby
+class MyView < Phlex::HTML
+  extend Phlexible::ProcessAttributes
+
+  register_element :my_custom_element
+
+  def process_attributes(attrs)
+    attrs[:data_processed] = true
+    attrs
+  end
+
+  def view_template
+    my_custom_element(name: 'test') { 'Custom content' }
+  end
+end
+```
+
 ## Development
 
 After checking out the repo, install dependencies with:
@@ -274,15 +343,10 @@ This gem supports varios major Phlex versions, as defined in the `Appraisal` fil
 To run tests for all supported Phlex versions:
 
 ```
-bundle exec appraisal sus
+bundle exec appraisal rails t
 ```
 
 To run tests for a specific Phlex versions, call:
-
-```bash
-bundle exec appraisal phlex-1 sus
-bundle exec appraisal phlex-2 sus
-```
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 

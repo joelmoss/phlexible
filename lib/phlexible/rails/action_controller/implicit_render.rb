@@ -51,6 +51,14 @@ module Phlexible
             phlex_view_path(action_name).camelize.safe_constantize
           end
 
+          # Constructs the path to the Phlex view class for a given action.
+          #
+          # This method builds a conventional path by combining the controller's path with the
+          # action name, appending "_view" as a suffix. The resulting path is later camelized
+          # and constantized to resolve the actual Phlex view class.
+          #
+          # @param action_name [String] The name of the controller action.
+          # @return [String] The view path (e.g., "users/index_view" for UsersController#index).
           def phlex_view_path(action_name)
             "#{controller_path}/#{action_name}_view"
           end

@@ -42,68 +42,71 @@ module Phlexible
 
       private
 
-      def define_controller_variables
-        return unless respond_to?(:__controller_variables__)
+        def define_controller_variables
+          return if !respond_to?(:__controller_variables__)
 
-        view_assigns = view_assigns()
-        view = @view
+          view_assigns = view_assigns()
+          view = @view
 
-        vars = (view&.__controller_variables__ || Set.new) + __controller_variables__
-        vars.each do |k, v|
-          allow_undefined = true
-          if k.ends_with?('!')
-            allow_undefined = false
-            k = k.chop
-          end
-
-          raise ControllerVariables::UndefinedVariable, k if !allow_undefined && !view_assigns.key?(k)
-
-          instance_variable_set(:"@#{v}", view_assigns[k])
-          view&.instance_variable_set(:"@#{v}", view_assigns[k])
-        end
-      end
-
-      module ClassMethods
-        # /*
-        def controller_variable(*names, **kwargs)
-          if names.empty? && kwargs.empty?
-            raise ArgumentError, 'You must provide at least one variable name and/or a hash of ' \
-                                 'variable names and options.'
-          end
-
-          allow_undefined = kwargs.delete(:allow_undefined)
-          as = kwargs.delete(:as)
-
-          if names.count > 1 && as
-            raise ArgumentError, 'You cannot provide the `as:` option when passing multiple ' \
-                                 'variable names.'
-          end
-
-          names.each do |name|
-            name_as = as || name
-            name = "#{name}!" unless allow_undefined
-
-            self.__controller_variables__ += { name.to_s => name_as.to_s }
-          end
-
-          kwargs.each do |k, v|
-            if v.is_a?(Hash)
-              name = v.key?(:as) ? v[:as].to_s : k.to_s
-
-              if v.key?(:allow_undefined)
-                k = "#{k}!" unless v[:allow_undefined]
-              elsif !allow_undefined
-                k = "#{k}!"
-              end
-            else
-              name = v.to_s
-              k = "#{k}!" unless allow_undefined
+          vars = (view&.__controller_variables__ || Set.new) + __controller_variables__
+          vars.each do |k, v|
+            allow_undefined = true
+            if k.ends_with?('!')
+              allow_undefined = false
+              k = k.chop
             end
 
-            self.__controller_variables__ += { k.to_s => name }
+            if !allow_undefined && !view_assigns.key?(k)
+              raise ControllerVariables::UndefinedVariable,
+                    k
+            end
+
+            instance_variable_set(:"@#{v}", view_assigns[k])
+            view&.instance_variable_set(:"@#{v}", view_assigns[k])
           end
         end
-      end
+
+        module ClassMethods
+          # /*
+          def controller_variable(*names, **kwargs)
+            if names.empty? && kwargs.empty?
+              raise ArgumentError, 'You must provide at least one variable name and/or a hash of ' \
+                                   'variable names and options.'
+            end
+
+            allow_undefined = kwargs.delete(:allow_undefined)
+            as = kwargs.delete(:as)
+
+            if names.many? && as
+              raise ArgumentError, 'You cannot provide the `as:` option when passing multiple ' \
+                                   'variable names.'
+            end
+
+            names.each do |name|
+              name_as = as || name
+              name = "#{name}!" if !allow_undefined
+
+              self.__controller_variables__ += { name.to_s => name_as.to_s }
+            end
+
+            kwargs.each do |k, v|
+              if v.is_a?(Hash)
+                name = v.key?(:as) ? v[:as].to_s : k.to_s
+
+                if v.key?(:allow_undefined)
+                  k = "#{k}!" if !v[:allow_undefined]
+                elsif !allow_undefined
+                  k = "#{k}!"
+                end
+              else
+                name = v.to_s
+                k = "#{k}!" if !allow_undefined
+              end
+
+              self.__controller_variables__ += { k.to_s => name }
+            end
+          end
+        end
     end
   end
 end

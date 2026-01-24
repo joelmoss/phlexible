@@ -20,6 +20,7 @@ module Phlexible
 
       included do
         include Phlex::Rails::Helpers::URLFor
+
         register_value_helper :protect_against_forgery?
         register_value_helper :request_forgery_protection_token
         register_value_helper :form_authenticity_token
@@ -51,90 +52,90 @@ module Phlexible
 
       private
 
-      def form_attributes
-        {
-          class: @options.delete(:form_class), # @deprecated
-          **(@options.delete(:form_attributes) || {})
-        }
-      end
-
-      def button_attrs
-        {
-          type: 'submit',
-          **@options
-        }
-      end
-
-      def method_for_options(options)
-        if options.is_a?(Array)
-          method_for_options(options.last)
-        elsif options.respond_to?(:persisted?)
-          options.persisted? ? :patch : :post
-        elsif options.respond_to?(:to_model)
-          method_for_options(options.to_model)
+        def form_attributes
+          {
+            class: @options.delete(:form_class), # @deprecated
+            **(@options.delete(:form_attributes) || {})
+          }
         end
-      end
 
-      def token_input(action, method)
-        return unless protect_against_forgery?
-
-        name = request_forgery_protection_token.to_s
-        value = form_authenticity_token(form_options: { action: action, method: method })
-
-        input type: 'hidden', name: name, value: value, autocomplete: 'off'
-      end
-
-      def method_tag(method)
-        return unless BUTTON_TAG_METHOD_VERBS.include?(method)
-
-        input type: 'hidden', name: '_method', value: method.to_s, autocomplete: 'off'
-      end
-
-      def param_inputs
-        return unless (params = @options.delete(:params))
-
-        to_form_params(params).each do |param|
-          input type: 'hidden', name: param[:name], value: param[:value], autocomplete: 'off'
+        def button_attrs
+          {
+            type: 'submit',
+            **@options
+          }
         end
-      end
 
-      # Returns an array of hashes each containing :name and :value keys suitable for use as the
-      # names and values of form input fields:
-      #
-      #   to_form_params(name: 'David', nationality: 'Danish')
-      #   # => [{name: 'name', value: 'David'}, {name: 'nationality', value: 'Danish'}]
-      #
-      #   to_form_params(country: { name: 'Denmark' })
-      #   # => [{name: 'country[name]', value: 'Denmark'}]
-      #
-      #   to_form_params(countries: ['Denmark', 'Sweden']})
-      #   # => [{name: 'countries[]', value: 'Denmark'}, {name: 'countries[]', value: 'Sweden'}]
-      #
-      # An optional namespace can be passed to enclose key names:
-      #
-      #   to_form_params({ name: 'Denmark' }, 'country')
-      #   # => [{name: 'country[name]', value: 'Denmark'}]
-      def to_form_params(attribute, namespace = nil)
-        attribute = attribute.to_h if attribute.respond_to?(:permitted?)
-
-        params = []
-        case attribute
-        when Hash
-          attribute.each do |key, value|
-            prefix = namespace ? "#{namespace}[#{key}]" : key
-            params.push(*to_form_params(value, prefix))
+        def method_for_options(options)
+          if options.is_a?(Array)
+            method_for_options(options.last)
+          elsif options.respond_to?(:persisted?)
+            options.persisted? ? :patch : :post
+          elsif options.respond_to?(:to_model)
+            method_for_options(options.to_model)
           end
-        when Array
-          array_prefix = "#{namespace}[]"
-          attribute.each do |value|
-            params.push(*to_form_params(value, array_prefix))
-          end
-        else
-          params << { name: namespace.to_s, value: attribute.to_param }
         end
 
-        params.sort_by { |pair| pair[:name] }
-      end
+        def token_input(action, method)
+          return if !protect_against_forgery?
+
+          name = request_forgery_protection_token.to_s
+          value = form_authenticity_token(form_options: { action: action, method: method })
+
+          input type: 'hidden', name: name, value: value, autocomplete: 'off'
+        end
+
+        def method_tag(method)
+          return if BUTTON_TAG_METHOD_VERBS.exclude?(method)
+
+          input type: 'hidden', name: '_method', value: method.to_s, autocomplete: 'off'
+        end
+
+        def param_inputs
+          return if !(params = @options.delete(:params))
+
+          to_form_params(params).each do |param|
+            input type: 'hidden', name: param[:name], value: param[:value], autocomplete: 'off'
+          end
+        end
+
+        # Returns an array of hashes each containing :name and :value keys suitable for use as the
+        # names and values of form input fields:
+        #
+        #   to_form_params(name: 'David', nationality: 'Danish')
+        #   # => [{name: 'name', value: 'David'}, {name: 'nationality', value: 'Danish'}]
+        #
+        #   to_form_params(country: { name: 'Denmark' })
+        #   # => [{name: 'country[name]', value: 'Denmark'}]
+        #
+        #   to_form_params(countries: ['Denmark', 'Sweden']})
+        #   # => [{name: 'countries[]', value: 'Denmark'}, {name: 'countries[]', value: 'Sweden'}]
+        #
+        # An optional namespace can be passed to enclose key names:
+        #
+        #   to_form_params({ name: 'Denmark' }, 'country')
+        #   # => [{name: 'country[name]', value: 'Denmark'}]
+        def to_form_params(attribute, namespace = nil)
+          attribute = attribute.to_h if attribute.respond_to?(:permitted?)
+
+          params = []
+          case attribute
+          when Hash
+            attribute.each do |key, value|
+              prefix = namespace ? "#{namespace}[#{key}]" : key
+              params.push(*to_form_params(value, prefix))
+            end
+          when Array
+            array_prefix = "#{namespace}[]"
+            attribute.each do |value|
+              params.push(*to_form_params(value, array_prefix))
+            end
+          else
+            params << { name: namespace.to_s, value: attribute.to_param }
+          end
+
+          params.sort_by { |pair| pair[:name] }
+        end
     end
   end
 end

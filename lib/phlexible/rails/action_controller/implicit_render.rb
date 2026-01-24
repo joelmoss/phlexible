@@ -40,20 +40,20 @@ module Phlexible
         def render_plex_view(options)
           options[:action] ||= action_name
 
-          return unless (view = phlex_view(options[:action]))
+          return if !(view = phlex_view(options[:action]))
 
           render view.new, options
         end
 
         private
 
-        def phlex_view(action_name = @_action_name)
-          phlex_view_path(action_name).camelize.safe_constantize
-        end
+          def phlex_view(action_name = @_action_name)
+            phlex_view_path(action_name).camelize.safe_constantize
+          end
 
-        def phlex_view_path(action_name)
-          "#{controller_path}/#{action_name}_view"
-        end
+          def phlex_view_path(action_name)
+            "#{controller_path}/#{action_name}_view"
+          end
       end
     end
   end

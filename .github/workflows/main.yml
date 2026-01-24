@@ -30,7 +30,7 @@ jobs:
           cache-version: 1
       - run: bundle exec appraisal install
       - name: tests
-        run: bundle exec appraisal sus
+        run: bundle exec appraisal rails test
 
   rubocop:
     runs-on: "ubuntu-latest"

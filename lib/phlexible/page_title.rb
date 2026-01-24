@@ -22,21 +22,21 @@ module Phlexible
 
     private
 
-    def page_title
-      title = []
+      def page_title
+        title = []
 
-      klass = self.class
-      while klass.respond_to?(:page_title)
-        title << if klass.page_title.is_a?(Proc)
-                   instance_exec(&klass.page_title)
-                 else
-                   klass.page_title
-                 end
+        klass = self.class
+        while klass.respond_to?(:page_title)
+          title << if klass.page_title.is_a?(Proc)
+                     instance_exec(&klass.page_title)
+                   else
+                     klass.page_title
+                   end
 
-        klass = klass.superclass
+          klass = klass.superclass
+        end
+
+        title.compact.join(' - ')
       end
-
-      title.compact.join(' - ')
-    end
   end
 end

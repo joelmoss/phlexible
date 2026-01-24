@@ -2,12 +2,22 @@
 
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in phlexible.gemspec
 gemspec
 
+gem 'amazing_print'
 gem 'appraisal'
-gem 'combustion'
 gem 'debug'
-gem 'rake', '~> 13.0'
-gem 'rubocop', '~> 1.55'
-gem 'sus'
+
+gem 'rubocop-disable_syntax', require: false
+gem 'rubocop-minitest', require: false
+gem 'rubocop-packaging', require: false
+gem 'rubocop-performance', require: false
+gem 'rubocop-rails', require: false
+gem 'rubocop-rake', require: false
+
+gem 'capybara'
+gem 'maxitest'
+gem 'minitest', '~> 5.0'
+gem 'minitest-difftastic'
+gem 'minitest-focus'
+gem 'minitest-spec-rails'

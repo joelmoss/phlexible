@@ -33,6 +33,18 @@ module Phlexible
       def after_template(*names, &block)
         set_callback(:template, :after, *names, &block)
       end
+
+      def before_layout(*names, &block)
+        set_callback(:layout, :before, *names, &block)
+      end
+
+      def after_layout(*names, &block)
+        set_callback(:layout, :after, *names, &block)
+      end
+
+      def around_layout(*names, &block)
+        set_callback(:layout, :around, *names, &block)
+      end
     end
 
     def around_template

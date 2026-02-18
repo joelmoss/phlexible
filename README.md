@@ -14,9 +14,7 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 ## Usage
 
-### Rails
-
-#### `ActionController::ImplicitRender`
+### `Rails::ActionController::ImplicitRender`
 
 Adds support for default and `action_missing` rendering of Phlex views. So instead of this:
 
@@ -24,6 +22,10 @@ Adds support for default and `action_missing` rendering of Phlex views. So inste
 class UsersController
   def index
     render Views::Users::Index.new
+  end
+
+  def show
+    render Views::Users::Show.new
   end
 end
 ```
@@ -36,9 +38,9 @@ class UsersController
 end
 ```
 
-##### View Resolution
+#### View Resolution
 
-By default, views are resolved using the `phlex_view_path` method, which constructs a path based on the controller and action name. For example, `UsersController#index` will look for `Users::IndexView`.
+By default, views are resolved using the `phlex_view_path` method, which constructs a path based on the controller and action name. For example, `UsersController#index` will look for `Views::Users::IndexView`.
 
 You can customize this behavior by overriding `phlex_view_path` in your controller:
 
@@ -56,7 +58,7 @@ end
 
 This would resolve `UsersController#index` to `Views::Users::Index` instead.
 
-#### `Callbacks`
+### `Callbacks`
 
 While Phlex does have `before_template`, `after_template`, and `around_template` hooks, they must be defined as regular Ruby methods, meaning you have to always remember to call `super` when redefining any hook method.
 
@@ -82,9 +84,105 @@ end
 
 You can still use the regular `before_template`, `after_template`, and `around_template` hooks as well, but I recommend that if you include this module, that you use callbacks instead.
 
-#### `ControllerVariables`
+When used with `Rails::AutoLayout`, layout callbacks (`before_layout`, `after_layout`, `around_layout`) are also available. See the `Rails::AutoLayout` section below.
 
-> Available in **>= 1.0.0**
+### `Rails::AutoLayout`
+
+Automatically wraps Phlex views in a layout component based on namespace conventions. Include this module in your view classes to enable automatic layout resolution.
+
+```ruby
+class Views::Admin::Index < Phlex::HTML
+  include Phlexible::Rails::AutoLayout
+
+  def view_template
+    span { 'admin index' }
+  end
+end
+```
+
+#### Layout Resolution
+
+Layouts are resolved by mapping the view's namespace to a layout class under `Views::Layouts::`. For example:
+
+| View class | Layout resolved |
+|---|---|
+| `Views::Admin::Index` | `Views::Layouts::Admin` |
+| `Views::Admin::Users::Show` | `Views::Layouts::Admin::Users` (falls back to `Views::Layouts::Admin` if not found) |
+| `Views::Dashboard::Index` | `Views::Layouts::Application` (default fallback) |
+
+Layout classes receive the view instance as a constructor argument and yield the view content:
+
+```ruby
+class Views::Layouts::Admin < Phlex::HTML
+  def initialize(view)
+    @view = view
+  end
+
+  def view_template(&block)
+    div(id: 'admin-layout', &block)
+  end
+end
+```
+
+#### Controller-Assigned Layouts
+
+You can override automatic resolution by setting a `@layout` instance variable in your controller. The view must also include `ViewAssigns` (which `AutoLayout` includes automatically):
+
+```ruby
+class AdminController < ApplicationController
+  def index
+    @layout = Views::Layouts::Custom
+  end
+end
+```
+
+#### Configuration
+
+Three class attributes control layout resolution:
+
+| Attribute | Default | Description |
+|---|---|---|
+| `auto_layout_view_prefix` | `'Views::'` | Only views matching this prefix get auto-layout. Set to `nil` to match all view classes. |
+| `auto_layout_namespace` | `'Views::Layouts::'` | Namespace where layout classes are looked up. |
+| `auto_layout_default` | `'Views::Layouts::Application'` | Fallback layout when no namespace match is found. Set to `nil` to render without a layout. |
+
+```ruby
+class Views::Base < Phlex::HTML
+  include Phlexible::Rails::AutoLayout
+
+  self.auto_layout_view_prefix = 'Views::'
+  self.auto_layout_namespace = 'Views::Layouts::'
+  self.auto_layout_default = 'Views::Layouts::Application'
+end
+```
+
+#### Layout Callbacks
+
+When `Rails::AutoLayout` is included, `before_layout`, `after_layout`, and `around_layout` callbacks become available (provided by the `Callbacks` module):
+
+```ruby
+class Views::Admin::Index < Phlex::HTML
+  include Phlexible::Rails::AutoLayout
+
+  before_layout :log_render
+
+  def view_template
+    span { 'admin index' }
+  end
+
+  private
+
+    def log_render
+      Rails.logger.info "Rendering with layout"
+    end
+end
+```
+
+#### Caching
+
+Layout resolution is cached per class in production. In development (when `Rails.configuration.enable_reloading` is enabled), layouts are resolved fresh on each render. You can manually clear the cache with `reset_resolved_layout!`.
+
+### `Rails::ControllerVariables`
 
 > **NOTE:** Prior to **1.0.0**, this module was called `ControllerAttributes` with a very different API. This is no longer available since **1.0.0**.
 
@@ -102,7 +200,7 @@ class Views::Users::Index < Views::Base
 end
 ```
 
-##### Options
+#### Options
 
 `controller_variable` accepts one or many symbols, or a hash of symbols to options.
 
@@ -127,9 +225,9 @@ end
 
 Please note that defining a variable with the same name as an existing variable in the view will be overwritten.
 
-#### `Responder`
+### `Rails::Responder`
 
-If you use [Responders](https://github.com/heartcombo/responders), Phlexible provides a responder to support implicit rendering similar to `ActionController::ImplicitRender` above. It will render the Phlex view using `respond_with` if one exists, and fall back to default rendering.
+If you use [Responders](https://github.com/heartcombo/responders), Phlexible provides a responder to support implicit rendering similar to `Rails::ActionController::ImplicitRender` above. It will render the Phlex view using `respond_with` if one exists, and fall back to default rendering.
 
 Just include it in your ApplicationResponder:
 
@@ -156,9 +254,9 @@ end
 
 This responder requires the use of `ActionController::ImplicitRender`, so don't forget to include that in your `ApplicationController`.
 
-If you use `ControllerVariables` in your view, and define a `resource` attribute, the responder will pass that to your view.
+If you use `Rails::ControllerVariables` in your view, and define a `resource` attribute, the responder will pass that to your view.
 
-#### `AElement`
+### `Rails::AElement`
 
 No need to call Rails `link_to` helper, when you can simply render an anchor tag directly with Phlex. But unfortunately that means you lose some of the magic that `link_to` provides. Especially the automatic resolution of URL's and Rails routes.
 
@@ -180,7 +278,7 @@ class MyView < Phlex::HTML
 end
 ```
 
-#### 'ButtonTo`
+### `Rails::ButtonTo`
 
 Generates a form containing a single button that submits to the URL created by the set of options.
 
@@ -198,7 +296,7 @@ The form submits a POST request by default. You can specify a different HTTP ver
 Phlexible::Rails::ButtonTo.new(:root, method: :patch) { 'My Button' }
 ```
 
-##### Options
+#### Options
 
 - `:class` - Specify the HTML class name of the button (not the form).
 - `:form_attributes` - Hash of HTML attributes for the form tag.
@@ -207,9 +305,7 @@ Phlexible::Rails::ButtonTo.new(:root, method: :patch) { 'My Button' }
 - `:method` - Symbol of the HTTP verb. Supported verbs are :post (default), :get, :delete, :patch,
   and :put.
 
-#### `MetaTags`
-
-> Available in **>= 1.0.0**
+### `Rails::MetaTags`
 
 A super simple way to define and render meta tags in your Phlex views. Just render the
 `Phlexible::Rails::MetaTagsComponent` component in the head element of your page, and define the
@@ -269,12 +365,13 @@ class MyView < Phlex::HTML
 end
 ```
 
-### PageTitle
+### `PageTitle`
 
 Helper to assist in defining page titles within Phlex views. Also includes support for nested views, where each desendent view class will have its title prepended to the page title. Simply include *Phlexible::PageTitle* module and assign the title to the `page_title` class variable:
 
 ```ruby
 class MyView
+  include Phlexible::PageTitle
   self.page_title = 'My Title'
 end
 ```

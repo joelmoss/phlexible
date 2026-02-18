@@ -17,13 +17,13 @@ Tests use Minitest (with maxitest, minitest-focus, minitest-spec-rails). The pro
 bundle exec appraisal rails test
 
 # Run tests for a specific appraisal
-bundle exec appraisal phlex2-rails8 rails test
+bundle exec appraisal phlex2/rails8 rails test
 
 # Run a single test file
-bundle exec appraisal phlex2-rails8 rails test test/phlexible/alias_view_test.rb
+bundle exec appraisal phlex2/rails8 rails test test/phlexible/alias_view_test.rb
 
 # Run a single test by line number
-bundle exec appraisal phlex2-rails8 rails test test/phlexible/alias_view_test.rb:10
+bundle exec appraisal phlex2/rails8 rails test test/phlexible/alias_view_test.rb:10
 
 # Focus a single test (add `focus` before the test method, provided by minitest-focus)
 ```
@@ -51,7 +51,7 @@ Modules are split into two categories:
 
 **Standalone modules** (no Rails dependency):
 - `Phlexible::AliasView` — `extend` in a view to create shortcut methods for rendering other components
-- `Phlexible::Callbacks` — `include` for ActiveSupport::Callbacks-based `before_template`/`after_template`/`around_template` hooks
+- `Phlexible::Callbacks` — `include` for ActiveSupport::Callbacks-based `before_template`/`after_template`/`around_template` hooks. Also provides `before_layout`/`after_layout`/`around_layout` when used with `AutoLayout`.
 - `Phlexible::PageTitle` — `include` for hierarchical page title management across nested views
 - `Phlexible::ProcessAttributes` — `extend` to intercept and modify HTML element attributes before rendering (Phlex 2.x only; Phlex 1.x has this built-in). Prepends wrappers onto all StandardElements, VoidElements, and custom `register_element` methods.
 
@@ -61,6 +61,7 @@ Modules are split into two categories:
 - `AElement` — overrides `a` tag to pass `href` through Rails `url_for`
 - `ButtonTo` — Phlex component replacing Rails `button_to` helper
 - `Responder` — integration with the [Responders](https://github.com/heartcombo/responders) gem
+- `AutoLayout` — automatic layout wrapping based on view namespace conventions (e.g., `Views::Admin::Index` resolves to `Views::Layouts::Admin`). Includes `ViewAssigns` and `Callbacks`. Layout resolution is cached per class in production.
 - `MetaTags` / `MetaTagsComponent` — define meta tags in controllers, render in views
 
 ### Key Patterns
@@ -68,6 +69,7 @@ Modules are split into two categories:
 - Modules use `extend` (AliasView, ProcessAttributes) or `include` (Callbacks, PageTitle, ControllerVariables) depending on whether they add class-level or instance-level behavior.
 - `ProcessAttributes` uses `class_eval` with string interpolation to dynamically wrap every HTML element method — be careful when modifying this.
 - `ControllerVariables` depends on both `ViewAssigns` and `Callbacks` internally.
+- `AutoLayout` depends on both `ViewAssigns` and `Callbacks`. Layout resolution is cached in production via `resolved_layout` class method; use `reset_resolved_layout!` to clear.
 - Tests use a Rails dummy app at `test/dummy/` for integration testing with real controllers/routes.
 
 ## Style

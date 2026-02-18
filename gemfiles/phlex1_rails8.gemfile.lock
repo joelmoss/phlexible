@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    phlexible (3.0.0)
+    phlexible (3.1.1)
       phlex (>= 1.10.0, < 3.0.0)
       phlex-rails (>= 1.2.0, < 3.0.0)
       rails (>= 7.2.0, < 9.0.0)
@@ -414,7 +414,7 @@ CHECKSUMS
   parser (3.3.10.1) sha256=06f6a725d2cd91e5e7f2b7c32ba143631e1f7c8ae2fb918fc4cebec187e6a688
   phlex (1.11.0) sha256=979548e79a205c981612f1ab613addc8fa128c8092694d02f41aad4cea905e73
   phlex-rails (1.2.2) sha256=a20218449e71bc9fa5a71b672fbede8a654c6b32a58f1c4ea83ddc1682307a4c
-  phlexible (3.0.0)
+  phlexible (3.1.1)
   pp (0.6.3) sha256=2951d514450b93ccfeb1df7d021cae0da16e0a7f95ee1e2273719669d0ab9df6
   pretty_please (0.2.0) sha256=1f00296f946ae8ffd53db25803ed3998d615b9cc07526517dc75fcca6af3a0d3
   prettyprint (0.2.0) sha256=2bc9e15581a94742064a3cc8b0fb9d45aae3d03a1baa6ef80922627a0766f193

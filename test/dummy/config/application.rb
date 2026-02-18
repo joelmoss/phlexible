@@ -22,6 +22,12 @@ Bundler.require(*Rails.groups)
 
 module Views
   module Articles; end
+
+  module Admin
+    module Users; end
+  end
+
+  module Dashboard; end
 end
 
 module Dummy

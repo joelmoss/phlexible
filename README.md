@@ -2,6 +2,26 @@
 
 A bunch of helpers and goodies intended to make life with [Phlex](https://phlex.fun) even easier!
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+  - [AliasView](#aliasview)
+  - [Callbacks](#callbacks)
+  - [PageTitle](#pagetitle)
+  - [ProcessAttributes](#processattributes)
+  - [Rails::ActionController::ImplicitRender](#railsactioncontrollerimplicitrender)
+  - [Rails::ControllerVariables](#railscontrollervariables)
+  - [Rails::AutoLayout](#railsautolayout)
+  - [Rails::AElement](#railsaelement)
+  - [Rails::ButtonTo](#railsbuttonto)
+  - [Rails::MetaTags](#railsmetatags)
+  - [Rails::Responder](#railsresponder)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
+- [Code of Conduct](#code-of-conduct)
+
 ## Installation
 
 Install the gem and add to the application's Gemfile by executing:
@@ -13,6 +33,128 @@ If bundler is not being used to manage dependencies, install the gem by executin
 `$ gem install phlexible`
 
 ## Usage
+
+### `AliasView`
+
+Create an alias at a given `element`, to the given view class.
+
+So instead of:
+
+```ruby
+class MyView < Phlex::HTML
+  def view_template
+    div do
+      render My::Awesome::Component.new
+    end
+  end
+end
+```
+
+You can instead do:
+
+```ruby
+class MyView < Phlex::HTML
+  extend Phlexible::AliasView
+
+  alias_view :awesome, -> { My::Awesome::Component }
+
+  def view_template
+    div do
+      awesome
+    end
+  end
+end
+```
+
+### `Callbacks`
+
+While Phlex does have `before_template`, `after_template`, and `around_template` hooks, they must be defined as regular Ruby methods, meaning you have to always remember to call `super` when redefining any hook method.
+
+This module provides a more Rails-like interface for defining callbacks in your Phlex views, using `ActiveSupport::Callbacks`. It implements the same `before_template`, `after_template`, and `around_template` hooks as callbacks.
+
+```ruby
+class Views::Users::Index < Views::Base
+  include Phlexible::Callbacks
+
+  before_template :set_title
+
+  def view_template
+    h1 { @title }
+  end
+
+  private
+
+    def set_title
+      @title = 'Users'
+    end
+end
+```
+
+You can still use the regular `before_template`, `after_template`, and `around_template` hooks as well, but I recommend that if you include this module, that you use callbacks instead.
+
+When used with `Rails::AutoLayout`, layout callbacks (`before_layout`, `after_layout`, `around_layout`) are also available. See the `Rails::AutoLayout` section below.
+
+### `PageTitle`
+
+Helper to assist in defining page titles within Phlex views. Also includes support for nested views, where each desendent view class will have its title prepended to the page title. Simply include *Phlexible::PageTitle* module and assign the title to the `page_title` class variable:
+
+```ruby
+class MyView
+  include Phlexible::PageTitle
+  self.page_title = 'My Title'
+end
+```
+
+Then call the `page_title` method in the `<head>` of your page.
+
+### `ProcessAttributes`
+
+> This functionality is already built in to **Phlex >= 1**. This module is only needed for **Phlex >= 2**.
+
+Allows you to intercept and modify HTML element attributes before they are rendered. This is useful for adding default attributes, transforming values, or conditionally modifying attributes based on other attributes.
+
+Extend your view class with `Phlexible::ProcessAttributes` and define a `process_attributes` instance method that receives the attributes hash and returns the modified hash.
+
+```ruby
+class MyView < Phlex::HTML
+  extend Phlexible::ProcessAttributes
+
+  def process_attributes(attrs)
+    # Add a default class to all elements
+    attrs[:class] ||= 'my-default-class'
+    attrs
+  end
+
+  def view_template
+    div(id: 'container') { 'Hello' }
+  end
+end
+```
+
+This will output:
+
+```html
+<div id="container" class="my-default-class">Hello</div>
+```
+
+The `process_attributes` method is called for all standard HTML elements and void elements, as well as any custom elements registered with `register_element`.
+
+```ruby
+class MyView < Phlex::HTML
+  extend Phlexible::ProcessAttributes
+
+  register_element :my_custom_element
+
+  def process_attributes(attrs)
+    attrs[:data_processed] = true
+    attrs
+  end
+
+  def view_template
+    my_custom_element(name: 'test') { 'Custom content' }
+  end
+end
+```
 
 ### `Rails::ActionController::ImplicitRender`
 
@@ -58,33 +200,48 @@ end
 
 This would resolve `UsersController#index` to `Views::Users::Index` instead.
 
-### `Callbacks`
+### `Rails::ControllerVariables`
 
-While Phlex does have `before_template`, `after_template`, and `around_template` hooks, they must be defined as regular Ruby methods, meaning you have to always remember to call `super` when redefining any hook method.
+> **NOTE:** Prior to **1.0.0**, this module was called `ControllerAttributes` with a very different API. This is no longer available since **1.0.0**.
 
-This module provides a more Rails-like interface for defining callbacks in your Phlex views, using `ActiveSupport::Callbacks`. It implements the same `before_template`, `after_template`, and `around_template` hooks as callbacks.
+Include this module in your Phlex views to get access to the controller's instance variables. It provides an explicit interface for accessing controller instance variables from within the view.
 
 ```ruby
 class Views::Users::Index < Views::Base
-  include Phlexible::Callbacks
+  include Phlexible::Rails::ControllerVariables
 
-  before_template :set_title
+  controller_variable :first_name, :last_name
 
   def view_template
-    h1 { @title }
+    h1 { "#{@first_name} #{@last_name}" }
   end
-
-  private
-
-    def set_title
-      @title = 'Users'
-    end
 end
 ```
 
-You can still use the regular `before_template`, `after_template`, and `around_template` hooks as well, but I recommend that if you include this module, that you use callbacks instead.
+#### Options
 
-When used with `Rails::AutoLayout`, layout callbacks (`before_layout`, `after_layout`, `around_layout`) are also available. See the `Rails::AutoLayout` section below.
+`controller_variable` accepts one or many symbols, or a hash of symbols to options.
+
+- `as:` - If set, the given attribute will be renamed to the given value. Helpful to avoid naming conflicts.
+- `allow_undefined:` - By default, if the instance variable is not defined in the controller, an
+  exception will be raised. If this option is to `true`, an error will not be raised.
+
+You can also pass a hash of attributes to `controller_variable`, where the key is the controller
+attribute, and the value is the renamed value, or options hash.
+
+```ruby
+class Views::Users::Index < Views::Base
+  include Phlexible::Rails::ControllerVariables
+
+  controller_variable last_name: :surname, first_name: { as: :given_name, allow_undefined: true }
+
+  def view_template
+    h1 { "#{@given_name} #{@surname}" }
+  end
+end
+```
+
+Please note that defining a variable with the same name as an existing variable in the view will be overwritten.
 
 ### `Rails::AutoLayout`
 
@@ -182,80 +339,6 @@ end
 
 Layout resolution is cached per class in production. In development (when `Rails.configuration.enable_reloading` is enabled), layouts are resolved fresh on each render. You can manually clear the cache with `reset_resolved_layout!`.
 
-### `Rails::ControllerVariables`
-
-> **NOTE:** Prior to **1.0.0**, this module was called `ControllerAttributes` with a very different API. This is no longer available since **1.0.0**.
-
-Include this module in your Phlex views to get access to the controller's instance variables. It provides an explicit interface for accessing controller instance variables from within the view.
-
-```ruby
-class Views::Users::Index < Views::Base
-  include Phlexible::Rails::ControllerVariables
-
-  controller_variable :first_name, :last_name
-
-  def view_template
-    h1 { "#{@first_name} #{@last_name}" }
-  end
-end
-```
-
-#### Options
-
-`controller_variable` accepts one or many symbols, or a hash of symbols to options.
-
-- `as:` - If set, the given attribute will be renamed to the given value. Helpful to avoid naming conflicts.
-- `allow_undefined:` - By default, if the instance variable is not defined in the controller, an
-  exception will be raised. If this option is to `true`, an error will not be raised.
-
-You can also pass a hash of attributes to `controller_variable`, where the key is the controller
-attribute, and the value is the renamed value, or options hash.
-
-```ruby
-class Views::Users::Index < Views::Base
-  include Phlexible::Rails::ControllerVariables
-
-  controller_variable last_name: :surname, first_name: { as: :given_name, allow_undefined: true }
-
-  def view_template
-    h1 { "#{@given_name} #{@surname}" }
-  end
-end
-```
-
-Please note that defining a variable with the same name as an existing variable in the view will be overwritten.
-
-### `Rails::Responder`
-
-If you use [Responders](https://github.com/heartcombo/responders), Phlexible provides a responder to support implicit rendering similar to `Rails::ActionController::ImplicitRender` above. It will render the Phlex view using `respond_with` if one exists, and fall back to default rendering.
-
-Just include it in your ApplicationResponder:
-
-```ruby
-class ApplicationResponder < ActionController::Responder
-  include Phlexible::Rails::ActionController::ImplicitRender
-  include Phlexible::Rails::Responder
-end
-```
-
-Then simply `respond_with` in your action method as normal:
-
-```ruby
-class UsersController < ApplicationController
-  def new
-    respond_with User.new
-  end
-
-  def index
-    respond_with User.all
-  end
-end
-```
-
-This responder requires the use of `ActionController::ImplicitRender`, so don't forget to include that in your `ApplicationController`.
-
-If you use `Rails::ControllerVariables` in your view, and define a `resource` attribute, the responder will pass that to your view.
-
 ### `Rails::AElement`
 
 No need to call Rails `link_to` helper, when you can simply render an anchor tag directly with Phlex. But unfortunately that means you lose some of the magic that `link_to` provides. Especially the automatic resolution of URL's and Rails routes.
@@ -333,99 +416,36 @@ class MyView < Phlex::HTML
 end
 ```
 
-### `AliasView`
+### `Rails::Responder`
 
-Create an alias at a given `element`, to the given view class.
+If you use [Responders](https://github.com/heartcombo/responders), Phlexible provides a responder to support implicit rendering similar to `Rails::ActionController::ImplicitRender` above. It will render the Phlex view using `respond_with` if one exists, and fall back to default rendering.
 
-So instead of:
+Just include it in your ApplicationResponder:
 
 ```ruby
-class MyView < Phlex::HTML
-  def view_template
-    div do
-      render My::Awesome::Component.new
-    end
+class ApplicationResponder < ActionController::Responder
+  include Phlexible::Rails::ActionController::ImplicitRender
+  include Phlexible::Rails::Responder
+end
+```
+
+Then simply `respond_with` in your action method as normal:
+
+```ruby
+class UsersController < ApplicationController
+  def new
+    respond_with User.new
+  end
+
+  def index
+    respond_with User.all
   end
 end
 ```
 
-You can instead do:
+This responder requires the use of `ActionController::ImplicitRender`, so don't forget to include that in your `ApplicationController`.
 
-```ruby
-class MyView < Phlex::HTML
-  extend Phlexible::AliasView
-
-  alias_view :awesome, -> { My::Awesome::Component }
-
-  def view_template
-    div do
-      awesome
-    end
-  end
-end
-```
-
-### `PageTitle`
-
-Helper to assist in defining page titles within Phlex views. Also includes support for nested views, where each desendent view class will have its title prepended to the page title. Simply include *Phlexible::PageTitle* module and assign the title to the `page_title` class variable:
-
-```ruby
-class MyView
-  include Phlexible::PageTitle
-  self.page_title = 'My Title'
-end
-```
-
-Then call the `page_title` method in the `<head>` of your page.
-
-### `ProcessAttributes`
-
-> This functionality is already built in to **Phlex >= 1**. This module is only needed for **Phlex >= 2**.
-
-Allows you to intercept and modify HTML element attributes before they are rendered. This is useful for adding default attributes, transforming values, or conditionally modifying attributes based on other attributes.
-
-Extend your view class with `Phlexible::ProcessAttributes` and define a `process_attributes` instance method that receives the attributes hash and returns the modified hash.
-
-```ruby
-class MyView < Phlex::HTML
-  extend Phlexible::ProcessAttributes
-
-  def process_attributes(attrs)
-    # Add a default class to all elements
-    attrs[:class] ||= 'my-default-class'
-    attrs
-  end
-
-  def view_template
-    div(id: 'container') { 'Hello' }
-  end
-end
-```
-
-This will output:
-
-```html
-<div id="container" class="my-default-class">Hello</div>
-```
-
-The `process_attributes` method is called for all standard HTML elements and void elements, as well as any custom elements registered with `register_element`.
-
-```ruby
-class MyView < Phlex::HTML
-  extend Phlexible::ProcessAttributes
-
-  register_element :my_custom_element
-
-  def process_attributes(attrs)
-    attrs[:data_processed] = true
-    attrs
-  end
-
-  def view_template
-    my_custom_element(name: 'test') { 'Custom content' }
-  end
-end
-```
+If you use `Rails::ControllerVariables` in your view, and define a `resource` attribute, the responder will pass that to your view.
 
 ## Development
 

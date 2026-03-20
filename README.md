@@ -361,6 +361,12 @@ class MyView < Phlex::HTML
 end
 ```
 
+You can also pass `:back` as the `href` value, which will use the referrer URL if available, or fall back to `javascript:history.back()`:
+
+```ruby
+a(href: :back) { 'Go back' }
+```
+
 ### `Rails::ButtonTo`
 
 Generates a form containing a single button that submits to the URL created by the set of options.

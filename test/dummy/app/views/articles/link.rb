@@ -3,7 +3,11 @@
 class Views::Articles::Link < Phlex::HTML
   include Phlexible::Rails::AElement
 
+  def initialize(**attrs)
+    @attributes = attrs
+  end
+
   def view_template
-    a(href: :root, class: :foo) { 'A link to root' }
+    a(**@attributes) { 'A link' }
   end
 end

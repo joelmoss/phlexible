@@ -30,7 +30,7 @@ module Views
   module Dashboard; end
 end
 
-module Dummy
+module Dummy # rubocop:disable Style/OneClassPerFile
   class Application < Rails::Application
     config.load_defaults Rails::VERSION::STRING.to_f
     # For compatibility with applications that use this config

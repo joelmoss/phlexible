@@ -8,6 +8,7 @@ A bunch of helpers and goodies intended to make life with [Phlex](https://phlex.
 - [Usage](#usage)
   - [AliasView](#aliasview)
   - [Callbacks](#callbacks)
+  - [ElementVariants](#elementvariants)
   - [PageTitle](#pagetitle)
   - [ProcessAttributes](#processattributes)
   - [Rails::ActionController::ImplicitRender](#railsactioncontrollerimplicitrender)
@@ -93,6 +94,60 @@ end
 You can still use the regular `before_template`, `after_template`, and `around_template` hooks as well, but I recommend that if you include this module, that you use callbacks instead.
 
 When used with `Rails::AutoLayout`, layout callbacks (`before_layout`, `after_layout`, `around_layout`) are also available. See the `Rails::AutoLayout` section below.
+
+### `ElementVariants`
+
+Declare named variants for one or more HTML elements, then apply them by passing the variant name as a Symbol (or Symbols) in the first argument to the element method. By default, each variant adds a `data-variant-<name>` attribute to the element.
+
+Extend your view class with `Phlexible::ElementVariants` and declare variants with `variant`:
+
+```ruby
+class MyView < Phlex::HTML
+  extend Phlexible::ElementVariants
+
+  variant :divider, on: [:h1, :h2, :h3, :h4, :h5, :h6]
+
+  def view_template
+    h1(:divider) { 'My Title' }
+  end
+end
+```
+
+This will output:
+
+```html
+<h1 data-variant-divider>My Title</h1>
+```
+
+Underscored names are rendered as dashes in the data attribute (e.g. `:super_big` becomes `data-variant-super-big`).
+
+#### Modifying attributes
+
+Pass a block to `variant` to modify the element's attributes when the variant is used. The block receives the attributes hash:
+
+```ruby
+class MyView < Phlex::HTML
+  extend Phlexible::ElementVariants
+
+  variant :external, on: :a do |attributes|
+    attributes[:target] = '_blank'
+  end
+
+  def view_template
+    a(:external, href: 'https://example.com') { 'Link' }
+  end
+end
+```
+
+#### Multiple variants
+
+You can apply multiple variants to a single element by passing more than one Symbol:
+
+```ruby
+a(:external, :primary, href: '/foo') { 'Link' }
+```
+
+Passing an unregistered variant raises `ArgumentError`.
 
 ### `PageTitle`
 

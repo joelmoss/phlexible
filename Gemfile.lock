@@ -5,7 +5,7 @@ PATH
       phlex (>= 1.10.0, < 3.0.0)
       phlex-rails (>= 1.2.0, < 3.0.0)
       rails (>= 7.2.0, < 9.0.0)
-      zeitwerk (~> 2.7.2)
+      zeitwerk (>= 2.7, < 3.0)
 
 GEM
   remote: https://rubygems.org/
@@ -249,7 +249,7 @@ GEM
     regexp_parser (2.12.0)
     reline (0.6.3)
       io-console (~> 0.5)
-    rubocop (1.86.1)
+    rubocop (1.86.2)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -277,7 +277,7 @@ GEM
       lint_roller (~> 1.1)
       rubocop (>= 1.75.0, < 2.0)
       rubocop-ast (>= 1.47.1, < 2.0)
-    rubocop-rails (2.35.0)
+    rubocop-rails (2.35.1)
       activesupport (>= 4.2.0)
       lint_roller (~> 1.1)
       rack (>= 1.1)
@@ -305,7 +305,7 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.7.5)
+    zeitwerk (2.8.0)
 
 PLATFORMS
   arm64-darwin-22

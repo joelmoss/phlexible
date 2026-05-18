@@ -34,5 +34,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'phlex', '>= 1.10.0', '< 3.0.0'
   spec.add_dependency 'phlex-rails', '>= 1.2.0', '< 3.0.0'
   spec.add_dependency 'rails', '>= 7.2.0', '< 9.0.0'
-  spec.add_dependency 'zeitwerk', '~> 2.7.2'
+  spec.add_dependency 'zeitwerk', '>= 2.7', '< 3.0'
 end
